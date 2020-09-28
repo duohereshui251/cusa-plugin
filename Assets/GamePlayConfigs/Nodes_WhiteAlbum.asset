@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac4ab32227d6d7458eaf9e0f73a60a7, type: 3}
+  m_Name: Nodes_WhiteAlbum
+  m_EditorClassIdentifier: 
+  l_Nodes:
+  - i_BeatPos: 0
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 1
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 2
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 3
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 4
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 5
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 6
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 7
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 8
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 9
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 10
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 11
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 12
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 13
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 14
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 15
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 16
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 17
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 20
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 21
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 22
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 63
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 106
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 107
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 141
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 158
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 159
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 160
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 170
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 181
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 193
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 230
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 231
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 284
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 286
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 289
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 291
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 292
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 293
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 294
+    b_IsUp: 1
+    e_Type: 1
+  - i_BeatPos: 316
+    b_IsUp: 0
+    e_Type: 1
+  - i_BeatPos: 323
+    b_IsUp: 1
+    e_Type: 1
+  I_BeatPerMinute: 128
+  F_BeatStartOffset: 0
+  AC_ClipToPlay: {fileID: 8300000, guid: 1411ff83bbba5ef4c82862310824e67d, type: 3}
