@@ -1,0 +1,79 @@
+{
+    "song_name": "xxx",
+    "path": "xxx_path",
+    "bpm": 128,
+    "offset": 0.0,
+    "sound_tracks": 4,
+    "nodes": [
+        {
+            "beatPos": 0,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 1,
+            "sound_track": 3,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 4,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 5,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 6,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 7,
+            "sound_track": 3,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 8,
+            "sound_track": 2,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 9,
+            "sound_track": 3,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 10,
+            "sound_track": 4,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 11,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 12,
+            "sound_track": 1,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 13,
+            "sound_track": 2,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 14,
+            "sound_track": 3,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 15,
+            "sound_track": 4,
+            "nodeType": 1
+        }
+    ]
+}

@@ -17,6 +17,7 @@ public class BeatNodes : ScriptableObject
     public int I_BeatPerMinute;
     public float F_BeatStartOffset;
     public AudioClip AC_ClipToPlay;
+    public int I_SoundTracks;
     #region Interact APIs
     Node tempNode;
     public void Clear()
@@ -51,18 +52,18 @@ public class BeatNodes : ScriptableObject
     {
         l_Nodes.Sort((left, right) => { return left.i_BeatPos >= right.i_BeatPos ? 1 : -1; });
     }
-    public bool ContainsNode(int beatPos, bool isUp)
+    public bool ContainsNode(int beatPos, int sound_track)
     {
         tempNode = l_Nodes.Find(p => p.i_BeatPos == beatPos);
-        return tempNode != null && tempNode.b_IsUp == isUp;
+        return tempNode != null && tempNode.i_sound_track == sound_track;
     }
-    public void SetNode(int beatPos, bool isUp, BeatType type)
+    public void SetNode(int beatPos, int sound_track, BeatType type)
     {
         tempNode = GetNodeByPos(beatPos);
         if (tempNode != null)
         {
             int index = l_Nodes.IndexOf(tempNode);
-            Node n = new Node(beatPos, isUp, type);
+            Node n = new Node(beatPos, sound_track, type);
             l_Nodes[index] = n;
         }
         else
@@ -71,11 +72,11 @@ public class BeatNodes : ScriptableObject
             {
                 if (l_Nodes[i].i_BeatPos > beatPos)
                 {
-                    l_Nodes.Insert(i, new Node(beatPos, isUp, type));
+                    l_Nodes.Insert(i, new Node(beatPos, sound_track, type));
                     return;
                 }
             }
-            l_Nodes.Add(new Node(beatPos, isUp, type));
+            l_Nodes.Add(new Node(beatPos, sound_track, type));
         }
     }
     public void AdjustNode(int beatPos, BeatType type)
@@ -85,7 +86,7 @@ public class BeatNodes : ScriptableObject
         if (tempNode != null)
         {
             int index = l_Nodes.IndexOf(tempNode);
-            Node n = new Node(beatPos, tempNode.b_IsUp, type);
+            Node n = new Node(beatPos, tempNode.i_sound_track, type);
             l_Nodes[index] = n;
         }
         else
@@ -174,13 +175,13 @@ public class BeatNodes : ScriptableObject
 [System.Serializable]
 public class Node
 {
-    public Node(int beatPos, bool isUp, BeatType type)
+    public Node(int beatPos, int sound_track, BeatType type)
     {
         i_BeatPos = beatPos;
-        b_IsUp = isUp;
+        i_sound_track = sound_track;
         e_Type = type;
     }
     public int i_BeatPos;
-    public bool b_IsUp;
+    public int  i_sound_track;
     public BeatType e_Type;
 }

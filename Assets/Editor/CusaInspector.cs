@@ -18,7 +18,7 @@ public class CusaInspector : Editor {
             Debug.LogError("[CusaInspector.OnEnable] GetWindow error. ");
 
         
-        const int width = 1200;
+        const int width = 1180;
         const int height = 400;
         var x = (Screen.currentResolution.width - width) / 2;
         var y = (Screen.currentResolution.height - height) / 2;
