@@ -16,7 +16,7 @@ public class CusaEditor : EditorWindow
     string ClearButton = "Clear";
 
     // MainView & upsidebar data
-    int I_RectWidth; // 整体宽度不变
+    float F_RectWidth; // 整体宽度不变
     int I_SliderHeight;
     int I_BeatsInView; // 固定显示的节拍数量
     int I_ViewBtnScale; // 节拍大小调整
@@ -86,7 +86,7 @@ public class CusaEditor : EditorWindow
     private void Awake()
     {
         Debug.Log("[CusaEditor.Awake]");
-        I_RectWidth = 1000;
+        F_RectWidth = 1000;
         I_BeatCheckLine = 50;
         I_SliderHeight = 80;
         I_BeatsInView = 16;
@@ -110,7 +110,7 @@ public class CusaEditor : EditorWindow
         }
 
     }
-    public void InitData(BeatNodes beats, int win_width, int win_height)
+    public void InitData(BeatNodes beats, float win_width, float win_height)
     {
         this.beats = beats;
         if (!Editable)
@@ -130,9 +130,9 @@ public class CusaEditor : EditorWindow
 
         i_totalBeats = (int)(f_totalTime / f_beatEach);
 
-        I_RectWidth = win_width;
+        F_RectWidth = win_width;
         leftViewWidth = 180.0f;
-        rightViewWidth = I_RectWidth - leftViewWidth;
+        rightViewWidth = F_RectWidth - leftViewWidth;
         f_sliderStartOffset = beats.F_BeatStartOffset > 0 ? rightViewWidth * (beats.F_BeatStartOffset / f_totalTime) : 0;
         //f_sliderBeatWidth = 2.0f;
         f_sliderBeatWidth = (rightViewWidth - f_sliderStartOffset) / i_totalBeats;
@@ -217,7 +217,7 @@ public class CusaEditor : EditorWindow
             //InitData();
             // TODO: 修改音轨宽度
             //f_soundTracksWidth = (win_height - I_SliderHeight) / I_SoundTracks;
-
+            InitData(this.beats, mainRect.width, mainRect.height);
         }
     }
     void LeftView()
@@ -225,6 +225,7 @@ public class CusaEditor : EditorWindow
         EditorGUILayout.BeginVertical(GUILayout.Width(leftViewWidth));
         EditorGUILayout.Space(15);
         // 画按钮
+        DrawBeatNodesSetting();
         DrawSongControl(); // draw 1
         EditorGUILayout.Space(15);
         DrawSaveButton();
@@ -244,6 +245,18 @@ public class CusaEditor : EditorWindow
     void RightView()
     {
         DrawRect(GUILayoutUtility.GetRect(rightViewWidth, mainRect.height));
+    }
+
+    void DrawBeatNodesSetting()
+    {
+        EditorGUILayout.BeginVertical(GUILayout.Width(100));
+        beats.I_BeatPerMinute = EditorGUILayout.IntField("bpm", beats.I_BeatPerMinute);
+        EditorGUILayout.Space(10);
+        beats.F_BeatStartOffset = EditorGUILayout.FloatField("offset",beats.F_BeatStartOffset);
+        EditorGUILayout.Space(10);
+        beats.I_SoundTracks = EditorGUILayout.IntField("sound_tracks", beats.I_SoundTracks);
+        EditorGUILayout.Space(10);
+        EditorGUILayout.EndVertical();
     }
     void DrawSongControl()
     {
@@ -399,7 +412,6 @@ public class CusaEditor : EditorWindow
         else
         {
             //Debug.Log("[CusaEditor.SetSongPos] not playing");
-
             play();
             EAudio.SetSamplePosition((int)(EAudio.GetSampleDuration() * (posTime / f_totalTime)));
             pause();
@@ -466,7 +478,6 @@ public class CusaEditor : EditorWindow
             GUI.color = lineColor;
             Rect lineRect = new Rect(totalRect.xMin, totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f, totalRect.width, 4f);
             GUI.Box(lineRect, t2_LineTex);
-            //bool isUp = j == 0;
             int soundtrack = j + 1;
             for (int i = 0; i < I_BeatsInView; i++)
             {
@@ -593,7 +604,7 @@ public class CusaEditor : EditorWindow
         #region Progress Line
         GUI.color = Color.white;
         float curPos = f_curTime / f_totalTime;
-        tempRect = new Rect(totalRect.xMin + (I_RectWidth - leftViewWidth) * curPos, totalRect.yMin, 1, totalRect.height);
+        tempRect = new Rect(totalRect.xMin + (F_RectWidth - leftViewWidth) * curPos, totalRect.yMin, 1, totalRect.height);
         GUI.DrawTexture(tempRect, t2_LineTex);
         #endregion
 
@@ -626,7 +637,7 @@ public class CusaEditor : EditorWindow
             Debug.LogFormat("[CusaEditor.DrawSider] mouse.position.x: {0}", v2_mousePos.x);
             Vector2 offset = v2_mousePos - totalRect.position;
             //Debug.LogFormat("[CusaEditor.DrawSider] click: offset {0}", offset.x);
-            float value = offset.x / (I_RectWidth - leftViewWidth);
+            float value = offset.x / (F_RectWidth - leftViewWidth);
             if (value > 1)
             {
                 Debug.Log("[CusaEditor.DrawSider] click out of area.");
