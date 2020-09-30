@@ -14,7 +14,7 @@ public class EditorGUISplitView
 
 	Direction splitDirection;
 	float splitNormalizedPosition;
-	int splitCount = 1;
+
 	bool resize;
 	public Vector2 scrollPosition;
 	Rect availableRect;

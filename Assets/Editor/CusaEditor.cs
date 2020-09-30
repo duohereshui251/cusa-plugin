@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UI;
 using System.IO;
+using NUnit.Framework.Constraints;
+
 public class CusaEditor : EditorWindow
 {
     // button string
@@ -53,6 +55,11 @@ public class CusaEditor : EditorWindow
     float f_beatToScale;
     float f_beatCheck;
 
+    float lastWidth;
+    float lastHeight;
+    bool stay = true;
+    //EditorCoroutineRunner co;
+
     // 颜色信息
     Color mainRectColor = Color.green;
     Color upsliderColor = Color.black;
@@ -61,14 +68,25 @@ public class CusaEditor : EditorWindow
     // 布局数值信息
     float leftViewWidth;
     float rightViewWidth;
-    Rect mainRect;
+    // 预览长度不会随着窗口的改变而变长，而会随着鼠标滚轮放大缩小变长
+    float f_sliderDisplayWidth;
+    bool b_isSetSliderDisplayWidth = false;
+    
 
 
     // 鼠标位置信息
     Vector2 v2_mousePos = Vector2.zero;
     bool b_isLeftClick = false;
+    
 
     Rect tempRect;
+
+    // 保存各个组件的Rect信息
+    Rect MainRect;
+    Rect SliderRect;
+    Rect SliderLineRect;
+    Rect SliderBarRect;
+    Rect MainViewRect;
 
     bool Editable
     {
@@ -108,6 +126,7 @@ public class CusaEditor : EditorWindow
             Debug.Log("[CusaEditor.OnEnable] not Editable.");
             return;
         }
+        stay = true;
 
     }
     public void InitData(BeatNodes beats, float win_width, float win_height)
@@ -127,16 +146,29 @@ public class CusaEditor : EditorWindow
         f_beatEach = 60f / beats.I_BeatPerMinute;
         f_beatCheck = 0f;
         f_beatToScale = 0f;
+        f_viewBeatWidth = 40.0f;
 
         i_totalBeats = (int)(f_totalTime / f_beatEach);
 
         F_RectWidth = win_width;
+
         leftViewWidth = 180.0f;
         rightViewWidth = F_RectWidth - leftViewWidth;
+
+        if (!b_isSetSliderDisplayWidth)
+        {
+            f_sliderDisplayWidth = rightViewWidth;
+            b_isSetSliderDisplayWidth = true;
+        }
+
+        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / I_ViewBtnScale) - 2;
+
+        Debug.LogFormat("[CusaEditor.InitData] editor window's width: {0}", F_RectWidth);
+        Debug.LogFormat("[CusaEditor.InitData] I_BeatsInView: {0}", I_BeatsInView);
+
         f_sliderStartOffset = beats.F_BeatStartOffset > 0 ? rightViewWidth * (beats.F_BeatStartOffset / f_totalTime) : 0;
         //f_sliderBeatWidth = 2.0f;
-        f_sliderBeatWidth = (rightViewWidth - f_sliderStartOffset) / i_totalBeats;
-        f_viewBeatWidth = 40.0f;
+        f_sliderBeatWidth = (f_sliderDisplayWidth - f_sliderStartOffset) / i_totalBeats;
 
         I_SoundTracks = beats.I_SoundTracks;
         if (I_SoundTracks > 0)
@@ -163,6 +195,7 @@ public class CusaEditor : EditorWindow
         i_pauseSample = 0;
         i_curSelectPos = -1;
         EditorApplication.update += Update;
+        EditorCoroutineRunner.StartEditorCoroutine(CheckForResize());
 
     }
 
@@ -179,7 +212,6 @@ public class CusaEditor : EditorWindow
     private void Update()
     {
         Repaint();
-
     }
     [MenuItem("Tool/CusaEditor")]
     public static void Init()
@@ -187,9 +219,6 @@ public class CusaEditor : EditorWindow
         // TODO: 解决直接从windows打开如何获取beats资源
         Debug.Log("[CusaEditor.Init]");
         CusaEditor window = (CusaEditor)EditorWindow.GetWindow(typeof(CusaEditor), false, "CusaEditor");
-        //var x = (Screen.currentResolution.width - win_width) / 2;
-        //var y = (Screen.currentResolution.height - win_height) / 2;
-        //window.position = new Rect(x, y,win_width, win_height);
     }
 
     private void OnGUI()
@@ -204,7 +233,7 @@ public class CusaEditor : EditorWindow
         tempRect = EditorGUILayout.BeginHorizontal();
         if (tempRect.width > 0.0f)
         {
-            mainRect = tempRect;
+            MainRect = tempRect;
         }
         LeftView();
         RightView();
@@ -214,11 +243,10 @@ public class CusaEditor : EditorWindow
 
         if (GUI.changed)
         {
-            //InitData();
-            // TODO: 修改音轨宽度
-            //f_soundTracksWidth = (win_height - I_SliderHeight) / I_SoundTracks;
-            InitData(this.beats, mainRect.width, mainRect.height);
+            Debug.Log("[CusaEditor.OnGUI] GUI Change.");
+            InitData(this.beats, MainRect.width, MainRect.height);
         }
+
     }
     void LeftView()
     {
@@ -233,10 +261,6 @@ public class CusaEditor : EditorWindow
         DrawClearButton();
 
         EventManage(); // draw 2
-        //GUILayout.FlexibleSpace();
-        //EditorGUILayout.Space(15);
-
-        //DrawSelectNodeType(mainRect);
         DrawSelectNodeType();
 
         GUILayout.FlexibleSpace();
@@ -244,7 +268,7 @@ public class CusaEditor : EditorWindow
     }
     void RightView()
     {
-        DrawRect(GUILayoutUtility.GetRect(rightViewWidth, mainRect.height));
+        DrawRect(GUILayoutUtility.GetRect(rightViewWidth, position.height));
     }
 
     void DrawBeatNodesSetting()
@@ -260,7 +284,6 @@ public class CusaEditor : EditorWindow
     }
     void DrawSongControl()
     {
-
         f_curTime = EAudio.GetCurTime();
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space(15);
@@ -376,6 +399,8 @@ public class CusaEditor : EditorWindow
 
     void EventManage()
     {
+        //b_isMouseDrag = Event.current.type == EventType.MouseDrag;
+
         if (Event.current.isMouse)
         {
             if (Event.current.type == EventType.MouseDown)
@@ -387,17 +412,19 @@ public class CusaEditor : EditorWindow
         }
         else if (Event.current.isScrollWheel)
         {
+            // TODO: 如果位置在滑动框
+            //
             if (Event.current.delta.y > 0)
             {
                 SetSongPos(f_curTime - .5f);
             }
-            else if (Event.current.delta.x < 0)
+            else if (Event.current.delta.y < 0)
             {
                 SetSongPos(f_curTime + .5f);
             }
 
         }
-        // TODO： 快捷按键
+        
     }
 
     //滚轮到不同位置播放歌曲
@@ -448,16 +475,16 @@ public class CusaEditor : EditorWindow
 
     }
 
-    void DrawRect(Rect mainRect)
+    void DrawRect(Rect MainRect)
     {
         // 方便观察，之后删掉
         //GUI.color = mainRectColor;
-        //GUI.Box(mainRect, "");
-        Rect upslider = new Rect(mainRect.xMin, mainRect.yMin, mainRect.width, I_SliderHeight);
-        Rect viewRect = new Rect(mainRect.xMin, mainRect.yMin + I_SliderHeight, mainRect.width, mainRect.height - I_SliderHeight);
+        //GUI.Box(MainRect, "");
+        SliderRect = new Rect(MainRect.xMin, MainRect.yMin, MainRect.width, I_SliderHeight);
+        MainViewRect = new Rect(MainRect.xMin, MainRect.yMin + I_SliderHeight, MainRect.width, MainRect.height - I_SliderHeight);
 
-        DrawSider(upslider); // draw 4
-        DrawView(viewRect); // draw 3
+        DrawSlider(SliderRect); // draw 4
+        DrawView(MainViewRect); // draw 3
     }
 
     void DrawView(Rect totalRect)
@@ -479,6 +506,7 @@ public class CusaEditor : EditorWindow
             Rect lineRect = new Rect(totalRect.xMin, totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f, totalRect.width, 4f);
             GUI.Box(lineRect, t2_LineTex);
             int soundtrack = j + 1;
+           
             for (int i = 0; i < I_BeatsInView; i++)
             {
                 int i_curPos = i_startPos + i;
@@ -489,7 +517,6 @@ public class CusaEditor : EditorWindow
                 }
                 if (i_curPos == i_curSelectPos && beats.ContainsNode(i_curPos, soundtrack)) // 选中高亮效果
                 {
-
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnScale - I_ViewBtnScale * .1f + (i - f_timeParam) * f_viewBeatWidth,
                                     lineRect.yMax - 2f - I_ViewBtnScale / 2 - I_ViewBtnScale * .1f,
                                     I_ViewBtnScale * 1.2f, I_ViewBtnScale * 1.2f);
@@ -499,8 +526,6 @@ public class CusaEditor : EditorWindow
                 tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnScale + (i - f_timeParam) * f_viewBeatWidth,
                                 lineRect.yMax - 2f - I_ViewBtnScale / 2,
                                 I_ViewBtnScale, I_ViewBtnScale);
-
-
                 BeatType type = beats.ContainsNode(i_curPos, soundtrack) ? beats.GetNodeByPos(i_curPos).e_Type : BeatType.Invalid;
                 if (!totalRect.Contains(tempRect.position))
                 {
@@ -597,16 +622,33 @@ public class CusaEditor : EditorWindow
 
     }
 
-    void DrawSider(Rect totalRect)
+    void DrawSliderLine()
+    {
+
+        float curPos = f_curTime / f_totalTime;
+        float oldPos = curPos;
+        GUI.color = Color.white;
+        SliderBarRect = new Rect(SliderRect.xMin, SliderRect.yMax - 10, f_sliderDisplayWidth, 20);
+
+        curPos = GUI.HorizontalSlider(SliderBarRect, curPos, 0, 1);
+
+        #region Progress Line       
+        SliderLineRect = new Rect(SliderBarRect.xMin + f_sliderDisplayWidth * curPos, SliderRect.yMin, 1, SliderRect.height);
+        GUI.DrawTexture(SliderLineRect, t2_LineTex);
+        #endregion
+
+        if(oldPos != curPos)
+        {
+            SetSongPos(curPos * f_totalTime);
+        }
+    }
+
+    void DrawSlider(Rect totalRect)
     {
         GUI.color = upsliderColor;
         GUI.Box(totalRect, "");
-        #region Progress Line
-        GUI.color = Color.white;
-        float curPos = f_curTime / f_totalTime;
-        tempRect = new Rect(totalRect.xMin + (F_RectWidth - leftViewWidth) * curPos, totalRect.yMin, 1, totalRect.height);
-        GUI.DrawTexture(tempRect, t2_LineTex);
-        #endregion
+
+        DrawSliderLine();
 
         for (int j = 0; j < I_SoundTracks; ++j)
         {
@@ -630,21 +672,22 @@ public class CusaEditor : EditorWindow
         }
 
         // 点击后改变的只有f_curTime 
-        if (v2_mousePos != Vector2.zero && totalRect.Contains(v2_mousePos))
-        {
-            // TODO: bug  宽度并不固定
-            Debug.LogFormat("[CusaEditor.DrawSider] totalRect.position.x: {0}", totalRect.position.x);
-            Debug.LogFormat("[CusaEditor.DrawSider] mouse.position.x: {0}", v2_mousePos.x);
-            Vector2 offset = v2_mousePos - totalRect.position;
-            //Debug.LogFormat("[CusaEditor.DrawSider] click: offset {0}", offset.x);
-            float value = offset.x / (F_RectWidth - leftViewWidth);
-            if (value > 1)
-            {
-                Debug.Log("[CusaEditor.DrawSider] click out of area.");
-                return;
-            }
-            SetSongPos(value * f_totalTime);
-        }
+        //if (v2_mousePos != Vector2.zero && totalRect.Contains(v2_mousePos))
+        //{
+        //    // TODO: bug  宽度并不固定
+        //    Debug.LogFormat("[CusaEditor.DrawSlider] totalRect.position.x: {0}", totalRect.position.x);
+        //    Debug.LogFormat("[CusaEditor.DrawSlider] mouse.position.x: {0}", v2_mousePos.x);
+        //    Vector2 offset = v2_mousePos - totalRect.position;
+        //    //Debug.LogFormat("[CusaEditor.DrawSlider] click: offset {0}", offset.x);
+        //    float value = offset.x / f_sliderDisplayWidth;
+        //    if (value > 1)
+        //    {
+        //        Debug.Log("[CusaEditor.DrawSlider] click out of area.");
+        //        return;
+        //    }
+        //    SetSongPos(value * f_totalTime);
+        //}
+
     }
 
     #region ColorSetting
@@ -711,5 +754,34 @@ public class CusaEditor : EditorWindow
         beats.Clear();
     }
     #endregion
+
+    // 检测窗口大小位置发生改变
+    IEnumerator CheckForResize()
+    {
+        lastWidth = position.width;
+        lastHeight = position.height;
+
+        while (stay)
+        {
+            if (lastWidth != position.width || lastHeight != position.height)
+            {
+                Debug.Log("[CusaEditor.CheckForResize] editor window's size changed. ");
+                CalculateRects();
+                lastWidth = position.width;
+                lastHeight = position.height;
+            }
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    void CalculateRects()
+    {     
+        F_RectWidth = position.width;
+        rightViewWidth = F_RectWidth - leftViewWidth;
+        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewBeatWidth) - 2;
+        Debug.LogFormat("[CusaEditor.CalculateRects] editor window's width: {0}",F_RectWidth);
+        Debug.LogFormat("[CusaEditor.CalculateRects] I_BeatsInView: {0}", I_BeatsInView);
+    }
+
 
 }

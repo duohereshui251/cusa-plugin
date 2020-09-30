@@ -3,77 +3,87 @@
     "path": "xxx_path",
     "bpm": 128,
     "offset": 0.0,
-    "sound_tracks": 4,
+    "sound_tracks": 3,
     "nodes": [
         {
-            "beatPos": 0,
-            "sound_track": 2,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 1,
-            "sound_track": 3,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 4,
-            "sound_track": 2,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 5,
-            "sound_track": 2,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 6,
-            "sound_track": 2,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 7,
-            "sound_track": 3,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 8,
-            "sound_track": 2,
-            "nodeType": 3
-        },
-        {
-            "beatPos": 9,
-            "sound_track": 3,
-            "nodeType": 3
-        },
-        {
-            "beatPos": 10,
-            "sound_track": 4,
-            "nodeType": 3
-        },
-        {
-            "beatPos": 11,
-            "sound_track": 2,
-            "nodeType": 1
-        },
-        {
-            "beatPos": 12,
+            "beatPos": 19,
             "sound_track": 1,
             "nodeType": 1
         },
         {
-            "beatPos": 13,
+            "beatPos": 20,
+            "sound_track": 1,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 21,
+            "sound_track": 1,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 22,
+            "sound_track": 1,
+            "nodeType": 1
+        },
+        {
+            "beatPos": 23,
             "sound_track": 2,
-            "nodeType": 1
+            "nodeType": 2
         },
         {
-            "beatPos": 14,
+            "beatPos": 24,
+            "sound_track": 2,
+            "nodeType": 2
+        },
+        {
+            "beatPos": 25,
+            "sound_track": 2,
+            "nodeType": 2
+        },
+        {
+            "beatPos": 26,
+            "sound_track": 2,
+            "nodeType": 2
+        },
+        {
+            "beatPos": 27,
+            "sound_track": 2,
+            "nodeType": 2
+        },
+        {
+            "beatPos": 28,
             "sound_track": 3,
-            "nodeType": 1
+            "nodeType": 3
         },
         {
-            "beatPos": 15,
-            "sound_track": 4,
-            "nodeType": 1
+            "beatPos": 29,
+            "sound_track": 2,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 30,
+            "sound_track": 1,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 31,
+            "sound_track": 2,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 32,
+            "sound_track": 3,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 33,
+            "sound_track": 2,
+            "nodeType": 3
+        },
+        {
+            "beatPos": 34,
+            "sound_track": 1,
+            "nodeType": 3
         }
     ]
 }
