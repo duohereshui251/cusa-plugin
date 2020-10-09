@@ -434,7 +434,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // TODO: 修改BeatNode的类型，把枚举的跟换成自己自定义的列表
     void DrawSelectNodeType_2()
     {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.Space(15);
 
+        EditorGUILayout.EndHorizontal();
     }
 
     
