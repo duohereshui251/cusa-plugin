@@ -18,6 +18,7 @@ public class BeatNodes : ScriptableObject
     public float F_BeatStartOffset;
     public AudioClip AC_ClipToPlay;
     public int I_SoundTracks;
+    public string S_SongName { get; set; }
     #region Interact APIs
     Node tempNode;
     public void Clear()
@@ -184,4 +185,119 @@ public class Node
     public int i_BeatPos;
     public int  i_sound_track;
     public BeatType e_Type;
+}
+
+
+public class NodeType
+{
+    public NodeType(int id, string typename)
+    {
+        I_Id = id;
+        S_TypeName = typename;
+        NodeColor = Color.white;
+    }
+
+    public NodeType(int id, string typename, Color color)
+    {
+        I_Id = id;
+        S_TypeName = typename;
+        NodeColor = color;
+    }
+    public int I_Id;
+    public string S_TypeName;
+    public Color NodeColor;
+}
+
+public class DefaultNodeType
+{
+    public List<NodeType> l_defaultTypes;
+
+    public DefaultNodeType()
+    {
+        l_defaultTypes = new List<NodeType>();
+        l_defaultTypes.Add(new NodeType(0, "Invalid"));
+        l_defaultTypes.Add(new NodeType(1, "Single"));
+    }
+}
+
+public class CustomNodeType: DefaultNodeType
+{
+    public List<NodeType> l_customTypes;
+
+    // 插入节奏点类型：如果列表已有相同命名的类型，则返回失败，否则返回成功
+
+    public bool Insert(string typename, Color color)
+    {
+        bool res = false;
+        
+        if(!l_defaultTypes.Exists(x => x.S_TypeName == typename) )
+        {
+            if(!l_customTypes.Exists(x => x.S_TypeName == typename))
+            {
+                res = true;
+                int id = l_customTypes.Count + 2;
+                l_customTypes.Add(new NodeType(id, typename, color));
+            }
+
+        }
+        return res;
+    }
+    // 删除节奏点类型： 如果列表不存在该类型， 则返回失败，否则删除并返回成功
+    public bool Delete(string typename)
+    {
+        // 不能删除默认的
+        bool res = l_customTypes.Remove(l_customTypes.Find(x => x.S_TypeName == typename));
+        return res;
+    }
+
+    // 查找节奏点类型： 如果查找成功， 返回id，如果失败，返回 invalid -1
+    public int Find(string typename)
+    {
+        int res = l_defaultTypes.FindIndex(x => x.S_TypeName == typename);
+        if(res == -1)
+        {
+            res = l_customTypes.FindIndex(x => x.S_TypeName == typename);
+        }
+        return res;
+    }
+
+    // 更新节奏点类型： 如果更新成功（与已有类型不会产生冲突），则返回成功，否则返回失败
+    public bool Update(string old_name, string new_name)
+    {
+        bool res = false;
+        int index = l_defaultTypes.FindIndex(x => x.S_TypeName == old_name);
+
+        // 如果是默认的则不允许更新
+        if(index == -1)
+        {
+            index = l_customTypes.FindIndex(x => x.S_TypeName == old_name);
+            if(index != -1)
+            {
+                res = true;
+                l_customTypes[index].S_TypeName = new_name;
+            }
+        }
+        return res;
+    }
+
+    public bool Update(string old_name, Color old_color, string new_name, Color new_color)
+    {
+        bool res = false;
+        int index = l_defaultTypes.FindIndex(x => x.S_TypeName == old_name);
+
+        // 如果是默认的则不允许更新
+        if (index == -1)
+        {
+            index = l_customTypes.FindIndex(x => x.S_TypeName == old_name);
+            if (index != -1)
+            {
+                res = true;
+                l_customTypes[index].S_TypeName = new_name;
+                l_customTypes[index].NodeColor = new_color;
+            }
+        }
+        return res;
+
+    }
+        
 }
