@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public enum BeatType
@@ -14,6 +16,10 @@ public class BeatNodes : ScriptableObject
 {
     [SerializeField, HideInInspector]
     List<Node> l_Nodes = new List<Node>();
+
+    // TODO1: new feature -- NodeType Edit
+    CustomNodeType c_NodeTypes;
+    static public string default_name =  "New Node Type";
     public int I_BeatPerMinute;
     public float F_BeatStartOffset;
     public AudioClip AC_ClipToPlay;
@@ -21,6 +27,7 @@ public class BeatNodes : ScriptableObject
     public string S_SongName { get; set; }
     #region Interact APIs
     Node tempNode;
+
     public void Clear()
     {
         l_Nodes.Clear();
@@ -80,6 +87,32 @@ public class BeatNodes : ScriptableObject
             l_Nodes.Add(new Node(beatPos, sound_track, type));
         }
     }
+
+    public void SetNode(int beatPos, int sound_track, string typename)
+    {
+        tempNode = GetNodeByPos(beatPos);
+        NodeType nType = GetTypeByName(typename);
+
+        if (tempNode != null)
+        {
+            int index = l_Nodes.IndexOf(tempNode);
+            Node n = new Node(beatPos, sound_track, nType);
+            l_Nodes[index] = n;
+        }
+        else
+        {
+            for (int i = 0; i < l_Nodes.Count; i++)
+            {
+                if (l_Nodes[i].i_BeatPos > beatPos)
+                {
+                    l_Nodes.Insert(i, new Node(beatPos, sound_track, nType));
+                    return;
+                }
+            }
+            l_Nodes.Add(new Node(beatPos, sound_track, nType));
+        }
+
+    }
     public void AdjustNode(int beatPos, BeatType type)
     {
 
@@ -94,6 +127,23 @@ public class BeatNodes : ScriptableObject
         {
             Debug.LogError("Can't Adjust A Unexisted Node!Pos:" + beatPos);
         }
+    }
+
+    public void AdjustNode(int beatPos, string typename)
+    {
+        NodeType nType = GetTypeByName(typename);
+        tempNode = GetNodeByPos(beatPos);
+        if (tempNode != null)
+        {
+            int index = l_Nodes.IndexOf(tempNode);
+            Node n = new Node(beatPos, tempNode.i_sound_track, nType);
+            l_Nodes[index] = n;
+        }
+        else
+        {
+            Debug.LogError("Can't Adjust A Unexisted Node!Pos:" + beatPos);
+        }
+
     }
     public void RemoveNode(int beatPos)
     {
@@ -123,6 +173,7 @@ public class BeatNodes : ScriptableObject
         Dictionary<float, int> dic = new Dictionary<float, int>();
         for (int i = 0; i < l_Nodes.Count; i++)
         {
+
             switch (l_Nodes[i].e_Type)
             {
                 case BeatType.Single:
@@ -170,6 +221,95 @@ public class BeatNodes : ScriptableObject
         }
         return beatMids;
     }
+
+    public List<float> BeatsCenterWithOffset(int beatPos, string  typename, float f_beatEach)
+    {
+        List<float> beatMids = new List<float>();
+        beatMids.Add(F_BeatStartOffset + beatPos * f_beatEach);
+        return beatMids;
+
+    }
+    #endregion
+
+    #region NodeType Edit
+    public bool AddNodeType(string typename, Color color)
+    {
+        return c_NodeTypes.Insert(typename, color);
+    }
+
+    public bool DeleteNodeType(string typename)
+    {
+        return c_NodeTypes.Delete(typename);
+    }
+
+    public int FindNodeType(string typename)
+    {
+        return c_NodeTypes.Find(typename);
+    }
+
+    public bool UpdateNodeType(string old_name, string new_name)
+    {
+        return c_NodeTypes.Update(old_name, new_name);
+    }
+
+    public bool UpdateNodeType(string old_name, Color old_color, string new_name, Color new_color)
+    {
+        return c_NodeTypes.Update( old_name, old_color, new_name, new_color);
+    }
+
+    #endregion
+
+    #region CustomNodeType Interact APIs
+
+    public void InitType()
+    {
+        c_NodeTypes = new CustomNodeType();
+    }
+    
+    // just for debug
+    public void PrintAllNodeType()
+    {
+        Debug.Log("[BeatNodes.PrintAllNodeType]");
+        c_NodeTypes.Print();
+    }
+    public int GetTypeCount()
+    {
+        return c_NodeTypes.Count();
+    }
+    public NodeType GetTypeByName(string typename)
+    {
+        return c_NodeTypes.GetTypeByName(typename);
+    }
+
+    public NodeType GetTypeByIndex(int index)
+    {
+        return c_NodeTypes.GetTypeByIndex(index);
+    }
+
+    public bool InsertType(string typename, Color color)
+    {
+        return c_NodeTypes.Insert(typename, color);
+    }
+
+    public bool DeleteType(string typename)
+    {
+        return c_NodeTypes.Delete(typename);
+    }
+
+    public int FindType(string typename)
+    {
+        return c_NodeTypes.Find(typename);
+    }
+
+    public bool UpdateType(string old_name, string new_name)
+    {
+        return c_NodeTypes.Update(old_name, new_name);
+    }
+
+    public bool UpdateType(string old_name, Color old_color, string new_name, Color new_color)
+    {
+        return c_NodeTypes.Update(old_name, old_color, new_name, new_color);
+    }
     #endregion
 }
 
@@ -182,9 +322,21 @@ public class Node
         i_sound_track = sound_track;
         e_Type = type;
     }
+
+    public Node(int beatPos, int sound_track, NodeType type)
+    {
+        i_BeatPos = beatPos;
+        i_sound_track = sound_track;
+        c_Type = type;
+    }
+
     public int i_BeatPos;
     public int  i_sound_track;
     public BeatType e_Type;
+
+    // TODO1: new feature -- NodeType Edit
+    public NodeType c_Type; // 用户自定义节奏点类型
+
 }
 
 
@@ -195,6 +347,7 @@ public class NodeType
         I_Id = id;
         S_TypeName = typename;
         NodeColor = Color.white;
+        t2_beatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
     }
 
     public NodeType(int id, string typename, Color color)
@@ -202,10 +355,12 @@ public class NodeType
         I_Id = id;
         S_TypeName = typename;
         NodeColor = color;
+        t2_beatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
     }
     public int I_Id;
     public string S_TypeName;
     public Color NodeColor;
+    public static Texture2D t2_beatBtn;
 }
 
 public class DefaultNodeType
@@ -214,6 +369,7 @@ public class DefaultNodeType
 
     public DefaultNodeType()
     {
+        Debug.Log("BaseClass: DefaultNodeType");
         l_defaultTypes = new List<NodeType>();
         l_defaultTypes.Add(new NodeType(0, "Invalid"));
         l_defaultTypes.Add(new NodeType(1, "Single"));
@@ -226,19 +382,73 @@ public class CustomNodeType: DefaultNodeType
 
     // 插入节奏点类型：如果列表已有相同命名的类型，则返回失败，否则返回成功
 
+    public CustomNodeType():base()
+    {
+        Debug.Log("DerivedClass: CustomNodeType");
+        l_customTypes = new List<NodeType>();
+    }
+    public NodeType GetTypeByName(string typename)
+    {
+        if(l_defaultTypes.Exists(x => x.S_TypeName == typename))
+        {
+            return l_defaultTypes.Find(x => x.S_TypeName == typename);
+        }
+        else if(l_customTypes.Exists(x => x.S_TypeName == typename))
+        {
+            return l_customTypes.Find(x => x.S_TypeName == typename);
+        }
+        else
+        {
+            Debug.LogFormat("[BeatNodes.GetTypeByName] node types doesn't exist {0}", typename);
+            return null;
+        }
+    }
+    public NodeType GetTypeByIndex(int index)
+    {
+        if(index > Count() || index < 0)
+        {
+            return l_defaultTypes[0];
+        }
+        if(index < l_defaultTypes.Count)
+        {
+            return l_defaultTypes[index];
+
+        }else
+        {
+            return l_customTypes[index - 2];
+        }
+
+    }
     public bool Insert(string typename, Color color)
     {
         bool res = false;
-        
+        int new_id = 0;
+        if (l_customTypes.Count > 0)
+        {
+            new_id = l_customTypes[l_customTypes.Count - 1].I_Id + 1;
+        }
+        if (typename == BeatNodes.default_name)
+        {
+            typename += new_id.ToString();          
+        }
+        Debug.LogFormat("[CustomNodeType.Insert] typename {0} is going to be inserted", typename);
         if(!l_defaultTypes.Exists(x => x.S_TypeName == typename) )
         {
             if(!l_customTypes.Exists(x => x.S_TypeName == typename))
             {
                 res = true;
-                int id = l_customTypes.Count + 2;
-                l_customTypes.Add(new NodeType(id, typename, color));
+                NodeType n = new NodeType(new_id, typename, color);
+                if(n == null)
+                {
+                    Debug.Log("[CustomNodeType.Insert] new Nodetype failed");
+                }
+                else
+                {
+                    Debug.LogFormat("[CustomNodeType.Insert] inserted {0}", typename);
+                    l_customTypes.Add(n);
+                    Debug.LogFormat("[CustomNodeType.Insert] Type Count {0}", l_customTypes.Count);
+                }
             }
-
         }
         return res;
     }
@@ -297,6 +507,28 @@ public class CustomNodeType: DefaultNodeType
             }
         }
         return res;
+
+    }
+
+    public int Count()
+    {
+        int res = 0;
+        res = l_defaultTypes.Count + l_customTypes.Count;
+        //Debug.LogFormat("[BeatNodes.Count] customtype count {0}", l_customTypes.Count);
+        return res;
+    }
+
+    // used for debug
+    public void Print()
+    {
+        foreach(var t in l_defaultTypes)
+        {
+            Debug.LogFormat("type id: {0}, name: {1}, color: {2}", t.I_Id, t.S_TypeName, t.NodeColor.ToString());
+        }
+        foreach(var t in l_customTypes)
+        {
+            Debug.LogFormat("type id: {0}, name: {1}, color: {2}", t.I_Id, t.S_TypeName, t.NodeColor.ToString());
+        }
 
     }
         

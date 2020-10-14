@@ -53,7 +53,7 @@ public class EditorGUISplitView
 		if (splitDirection == Direction.Horizontal)
         {
 			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(availableRect.width * splitNormalizedPosition));
-			// TODO 画线
+			
 
 		}
 		else
