@@ -91,12 +91,11 @@ public class BeatNodes : ScriptableObject
     public void SetNode(int beatPos, int sound_track, string typename)
     {
         tempNode = GetNodeByPos(beatPos);
-        NodeType nType = GetTypeByName(typename);
 
         if (tempNode != null)
         {
             int index = l_Nodes.IndexOf(tempNode);
-            Node n = new Node(beatPos, sound_track, nType);
+            Node n = new Node(beatPos, sound_track, typename);
             l_Nodes[index] = n;
         }
         else
@@ -105,11 +104,11 @@ public class BeatNodes : ScriptableObject
             {
                 if (l_Nodes[i].i_BeatPos > beatPos)
                 {
-                    l_Nodes.Insert(i, new Node(beatPos, sound_track, nType));
+                    l_Nodes.Insert(i, new Node(beatPos, sound_track, typename));
                     return;
                 }
             }
-            l_Nodes.Add(new Node(beatPos, sound_track, nType));
+            l_Nodes.Add(new Node(beatPos, sound_track, typename));
         }
 
     }
@@ -131,12 +130,12 @@ public class BeatNodes : ScriptableObject
 
     public void AdjustNode(int beatPos, string typename)
     {
-        NodeType nType = GetTypeByName(typename);
+
         tempNode = GetNodeByPos(beatPos);
         if (tempNode != null)
         {
             int index = l_Nodes.IndexOf(tempNode);
-            Node n = new Node(beatPos, tempNode.i_sound_track, nType);
+            Node n = new Node(beatPos, tempNode.i_sound_track, typename);
             l_Nodes[index] = n;
         }
         else
@@ -263,7 +262,8 @@ public class BeatNodes : ScriptableObject
 
     public void InitType()
     {
-        c_NodeTypes = new CustomNodeType();
+        if(c_NodeTypes == null)
+            c_NodeTypes = new CustomNodeType();
     }
     
     // just for debug
@@ -310,6 +310,12 @@ public class BeatNodes : ScriptableObject
     {
         return c_NodeTypes.Update(old_name, old_color, new_name, new_color);
     }
+
+    public Color GetTypeColor(string typename)
+    {
+        return c_NodeTypes.GetColor(typename);
+    }
+
     #endregion
 }
 
@@ -323,7 +329,7 @@ public class Node
         e_Type = type;
     }
 
-    public Node(int beatPos, int sound_track, NodeType type)
+    public Node(int beatPos, int sound_track, string type)
     {
         i_BeatPos = beatPos;
         i_sound_track = sound_track;
@@ -335,7 +341,7 @@ public class Node
     public BeatType e_Type;
 
     // TODO1: new feature -- NodeType Edit
-    public NodeType c_Type; // 用户自定义节奏点类型
+    public  string c_Type; // 用户自定义节奏点类型
 
 }
 
@@ -357,6 +363,7 @@ public class NodeType
         NodeColor = color;
         t2_beatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
     }
+    public static string Invalid = "Invalid";
     public int I_Id;
     public string S_TypeName;
     public Color NodeColor;
@@ -371,9 +378,10 @@ public class DefaultNodeType
     {
         Debug.Log("BaseClass: DefaultNodeType");
         l_defaultTypes = new List<NodeType>();
-        l_defaultTypes.Add(new NodeType(0, "Invalid"));
+        l_defaultTypes.Add(new NodeType(0, NodeType.Invalid));
         l_defaultTypes.Add(new NodeType(1, "Single"));
     }
+
 }
 
 public class CustomNodeType: DefaultNodeType
@@ -466,7 +474,7 @@ public class CustomNodeType: DefaultNodeType
         int res = l_defaultTypes.FindIndex(x => x.S_TypeName == typename);
         if(res == -1)
         {
-            res = l_customTypes.FindIndex(x => x.S_TypeName == typename);
+            res = l_customTypes.FindIndex(x => x.S_TypeName == typename) + 2;
         }
         return res;
     }
@@ -508,6 +516,25 @@ public class CustomNodeType: DefaultNodeType
         }
         return res;
 
+    }
+    public Color GetColor(string typename)
+    {
+        int index = Find(typename);
+        if(index != -1)
+        {
+            if(index  < 2)
+            {
+                return l_defaultTypes[index].NodeColor;
+            }
+            else
+            {
+                return l_customTypes[index - 2].NodeColor;
+            }
+        }
+        else
+        {
+            return Color.white;
+        }
     }
 
     public int Count()
