@@ -233,6 +233,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             f_sliderDisplayWidth = rightViewWidth;
             b_isSetSliderDisplayWidth = true;
         }
+        
 
         I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / I_ViewBtnScale) - 2;
 
@@ -350,6 +351,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         DrawRect(GUILayoutUtility.GetRect(rightViewWidth, position.height));
     }
 
+    // 画文件名，歌曲信息，歌曲控制按钮
     void LeftUpView()
     {
         MusicInfoRect = EditorGUILayout.BeginVertical();
@@ -1096,7 +1098,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         Debug.Log("[CusaEditorWindow.SaveToJson]");
 
         BeatNodesJson beatjsonObj = new BeatNodesJson();
-        beatjsonObj.song_name = "xxx";
+        beatjsonObj.song_name = beats.name;
         beatjsonObj.path = "xxx_path";
         beatjsonObj.bpm = beats.I_BeatPerMinute;
         beatjsonObj.offset = beats.F_BeatStartOffset;
@@ -1106,7 +1108,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         List<Node> nodes = beats.GetNodes();
         for (int i = 0; i < nodes.Count; ++i)
         {
-            beatjsonObj.nodes.Add(new BeatNodesJson.NodeJson(nodes[i].i_BeatPos, nodes[i].i_sound_track, nodes[i].e_Type));
+            beatjsonObj.nodes.Add(new BeatNodesJson.NodeJson(i, nodes[i].i_BeatPos, nodes[i].i_sound_track, nodes[i].e_Type));
         }
         string jsonstr = JsonUtility.ToJson(beatjsonObj, true);
         Debug.Log(jsonstr);

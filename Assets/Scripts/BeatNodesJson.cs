@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-
+using JetBrains.Annotations;
 
 [Serializable]
 public class BeatNodesJson 
@@ -19,12 +18,14 @@ public class BeatNodesJson
     [Serializable]
     public class NodeJson
     {
-        public NodeJson(int beatPos, int sound_track, BeatType type)
+        public NodeJson(int id,int beatPos, int sound_track, BeatType type)
         {
+            this.ID = id;
             this.beatPos = beatPos;
             this.sound_track = sound_track;
             this.nodeType = type;
         }
+        public int ID;
         public int beatPos;
         public int sound_track;
         public BeatType nodeType;

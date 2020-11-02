@@ -21,6 +21,7 @@ public class BeatNodes : ScriptableObject
     CustomNodeType c_NodeTypes;
     static public string default_name =  "New Node Type";
     public int I_BeatPerMinute;
+    public int I_BeatOffset;
     public float F_BeatStartOffset;
     public AudioClip AC_ClipToPlay;
     public int I_SoundTracks;
@@ -380,6 +381,8 @@ public class DefaultNodeType
         l_defaultTypes = new List<NodeType>();
         l_defaultTypes.Add(new NodeType(0, NodeType.Invalid));
         l_defaultTypes.Add(new NodeType(1, "Single"));
+        //l_defaultTypes.Add(new NodeType(2, "Double"));
+        //l_defaultTypes.Add(new NodeType(3, "Trible")); 
     }
 
 }
