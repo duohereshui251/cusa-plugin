@@ -254,8 +254,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         {
             I_SliderHeight = 80 + (I_SoundTracks - 2) * 20;
         }
-        t2_BeatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn");
-        t2_BeatBtn_gray = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
+
+        t2_BeatBtn = new Texture2D(1, 1);
+        t2_BeatBtn_gray = new Texture2D(1, 1);
+        // 设置颜色
+        //t2_BeatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn");
+        //t2_BeatBtn_gray = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
         BeatBtnDict = new Dictionary<BeatType, Texture2D>();
         BeatBtnDict.Add(BeatType.Invalid, t2_BeatBtn_gray);
         BeatBtnDict.Add(BeatType.Single, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-blue"));
