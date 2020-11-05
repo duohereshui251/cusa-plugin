@@ -889,9 +889,18 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         for (int j = 0; j < I_SoundTracks; j++)
         {
+            // TODO7：把中间的线删掉换成两边的线
             GUI.color = lineColor;
-            Rect lineRect = new Rect(totalRect.xMin, totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f, totalRect.width, 4f);
+            float up = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) - I_ViewBtnHeight / 2;
+            float down = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) + I_ViewBtnHeight / 2;
+            Rect lineRect = new Rect(totalRect.xMin, up, totalRect.width, 2f);
             GUI.Box(lineRect, t2_LineTex);
+
+            lineRect = new Rect(totalRect.xMin, down, totalRect.width, 2f);
+            GUI.Box(lineRect, t2_LineTex);
+
+            lineRect = new Rect(totalRect.xMin, totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f, totalRect.width, 2f);
+
             int soundtrack = j + 1;
 
             for (int i = 0; i < I_BeatsInView; i++)
