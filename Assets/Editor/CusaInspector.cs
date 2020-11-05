@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(BeatNodes))]
+[CustomEditor(typeof(BeatNotes))]
 public class CusaInspector : Editor {
 
-    BeatNodes beats;
+    BeatNotes beats;
     private void OnEnable()
     {
         //Debug.Log("[CusaInspector.OnEnable]");
-        //beats = target as BeatNodes;
+        //beats = target as BeatNotes;
         //CusaEditorWindow window =
         //    EditorWindow.GetWindow<CusaEditorWindow>();
         //if (window == null)

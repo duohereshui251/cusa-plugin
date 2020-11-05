@@ -5,28 +5,32 @@ using System;
 using JetBrains.Annotations;
 
 [Serializable]
-public class BeatNodesJson 
+public class BeatNotesJson 
 {
 
     public string song_name;
     public string path;
     public int bpm;
     public float offset;
+    public int little_beats;
     public int sound_tracks;
-    public List<NodeJson> nodes;
+    
+    public List<NoteJson> nodes;
 
     [Serializable]
-    public class NodeJson
+    public class NoteJson
     {
-        public NodeJson(int id,int beatPos, int sound_track, BeatType type)
+        public NoteJson(int id,int beatPos,int littlePos, int sound_track, BeatType type)
         {
             this.ID = id;
             this.beatPos = beatPos;
+            this.littleBeatPos = littlePos;
             this.sound_track = sound_track;
             this.nodeType = type;
         }
         public int ID;
         public int beatPos;
+        public int littleBeatPos;
         public int sound_track;
         public BeatType nodeType;
     }

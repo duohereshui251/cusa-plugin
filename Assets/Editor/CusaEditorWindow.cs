@@ -32,8 +32,18 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     // MainView & upsidebar data
     float F_RectWidth; // 整体宽度不变
-    int I_SliderHeight;
+    float f_SliderHeight;
     int I_BeatsInView; // 固定显示的节拍数量
+    /// <summary>
+    /// 小节
+    /// </summary>
+    int little_beats;
+    /// <summary>
+    /// 小节选项
+    /// </summary>
+    string[] little_beats_options = new string[] { "2", "3", "4", "6", "8", "12", "16", "24", "32" };
+    int[] little_beats_values = {2,3,4,6,8,12,16,24,32};
+    int little_beats_index = 0;
 
     /// <summary>
     /// note的宽度
@@ -50,7 +60,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     int I_SliderBeatScale;
     int I_BeatCheckLine; // 判定线位置
-    BeatType e_CurNodeType;
+    BeatType e_CurNoteType;
     int I_buttonWidth;
     int I_SoundTracks;
 
@@ -68,7 +78,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     // 歌曲控制信息
 
-    public BeatNodes beats;
+    public BeatNotes beats;
     bool b_isLoadBeats;
     bool b_pause;
     int i_pauseSample;
@@ -105,7 +115,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // 保存各个组件的Rect信息
     Rect LeftRect;
     Rect MusicInfoRect;
-    Rect NodeTypesRect;
+    Rect NoteTypesRect;
     Rect TypeEditRect;
     Rect MainRect;
     Rect SliderRect;
@@ -114,9 +124,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     Rect MainViewRect;
 
     // 选中的类型名称
-    string S_SelectedNodeTypeName;
+    string S_SelectedNoteTypeName;
     bool b_TypeSelected = false;
-    NodeType CurNodeType;
+    NoteType CurNoteType;
     bool Editable
     {
         get
@@ -135,7 +145,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         Debug.Log("[CusaEditorWindow.Awake]");
         F_RectWidth = 1000;
         I_BeatCheckLine = 50;
-        I_SliderHeight = 80;
+        f_SliderHeight = 80;
         I_BeatsInView = 16;
         I_ViewBtnWidth = 4;
         I_ViewBtnHeight = 80;
@@ -143,7 +153,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         I_SliderBeatScale = 2;
         I_buttonWidth = 90;
         //f_tipWidth = 80;
-        e_CurNodeType = BeatType.Single;
+
+        // TODO8
+        //little_beats_options = ConvertSlashToUnicodeSlash(little_beats_options);
+        e_CurNoteType = BeatType.Single;
         Event.current = new Event();
 
     }
@@ -151,7 +164,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     static bool OnOpenAsset(int instanceID, int line)
     {
         Debug.Log("[CusaEditorWindow.OnOpenAsset]");
-        var nodesInfo = EditorUtility.InstanceIDToObject(instanceID) as BeatNodes;
+        var nodesInfo = EditorUtility.InstanceIDToObject(instanceID) as BeatNotes;
         if (nodesInfo)
         {
             EditorWindow.GetWindow<CusaEditorWindow>();
@@ -198,13 +211,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         {
             activeObject = EditorUtility.InstanceIDToObject(m_LastSelectedObjectID);
         }
-        BeatNodes tempBeats = activeObject as BeatNodes;
+        BeatNotes tempBeats = activeObject as BeatNotes;
 
 
         if (tempBeats != null)
         {
             beats = tempBeats;
-            Debug.Log("[CusaEditorWindow.OnSelectionChange] change BeatNodes file");
+            Debug.Log("[CusaEditorWindow.OnSelectionChange] change BeatNotes file");
             InitData(1180, 400);
         }
         EditorCoroutineRunner.StartEditorCoroutine(CheckForResize());
@@ -216,6 +229,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //this.beats = beats;
         var x = (Screen.currentResolution.width - win_width) / 2;
         var y = (Screen.currentResolution.height - win_height) / 2;
+
 
         this.position = new Rect(x, y, win_width, win_height);
 
@@ -230,6 +244,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EAudio.AttachClipTo(beats.AC_ClipToPlay);
 
         f_totalTime = beats.AC_ClipToPlay.length;
+
+        little_beats = 4;
 
         f_beatEach = 60f / beats.I_BeatPerMinute;
         //f_beatCheck = 0f;
@@ -252,6 +268,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         // TODO7
         I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / I_ViewBtnWidth) - 2;
 
+
         //Debug.LogFormat("[CusaEditorWindow.InitData] editor window's width: {0}", F_RectWidth);
         //Debug.LogFormat("[CusaEditorWindow.InitData] I_BeatsInView: {0}", I_BeatsInView);
 
@@ -260,14 +277,17 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         f_sliderBeatWidth = (f_sliderDisplayWidth - f_sliderStartOffset) / i_totalBeats;
 
         I_SoundTracks = beats.I_SoundTracks;
+
+        f_SliderHeight = win_height / 3;
+
         if (I_SoundTracks > 0)
         {
-            f_soundTracksWidth = (win_height - I_SliderHeight) / I_SoundTracks;
+            f_soundTracksWidth = (win_height - f_SliderHeight) / I_SoundTracks;
 
         }
         if (I_SoundTracks > 2)
         {
-            I_SliderHeight = 80 + (I_SoundTracks - 2) * 20;
+            f_SliderHeight = win_height / 3 + (I_SoundTracks - 2) * 20;
         }
 
         t2_BeatBtn = new Texture2D(1, 1);
@@ -347,22 +367,21 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         GUI.color = Color.white;
 
         // 画按钮
-
         LeftUpView();
 
-        //NodeTypesRect = new Rect(LeftRect.xMin, LeftRect.yMin + MusicInfoRect.height, MusicInfoRect.width, LeftRect.height - MusicInfoRect.height - 80);
+        //NoteTypesRect = new Rect(LeftRect.xMin, LeftRect.yMin + MusicInfoRect.height, MusicInfoRect.width, LeftRect.height - MusicInfoRect.height - 80);
         //TypeEditRect = new Rect(LeftRect.xMin, LeftRect.yMax - 80, MusicInfoRect.width, 80);
 
         //GUI.color = Color.blue;
-        //GUI.Box(NodeTypesRect, "");
+        //GUI.Box(NoteTypesRect, "");
         //GUI.color = Color.green;
         //GUI.Box(TypeEditRect, "");
         EventManage(); // draw 2
 
 #if (UseCustomType)
-        DrawSelectNodeType_2();
+        DrawSelectNoteType_2();
 #else
-            DrawSelectNodeType();
+            DrawSelectNoteType();
 #endif
 
         EditorGUILayout.EndVertical();
@@ -381,7 +400,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //GUI.Box(MusicInfoRect,"");
         DrawFileName();
         EditorGUILayout.Space(15);
-        DrawBeatNodesSetting();
+        DrawBeatNotesSetting();
         EditorGUILayout.Space(15);
 
         DrawSongControl(); // draw 1
@@ -409,7 +428,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.EndHorizontal();
 
     }
-    void DrawBeatNodesSetting()
+    void DrawBeatNotesSetting()
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space(15);
@@ -430,6 +449,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(10);
         beats.I_SoundTracks = EditorGUILayout.IntField("sound_tracks", beats.I_SoundTracks);
         EditorGUILayout.Space(10);
+
+        // TODO8
+        EditorGUILayout.Popup(little_beats_index, little_beats_options);
+        //beats.I_LittleBeats = little_beats_values[little_beats_index];
+        EditorGUILayout.Space(10);
+
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space(15);
@@ -484,8 +509,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     }
 
 
-    // TODO1: 修改BeatNode的类型，把枚举的跟换成自己自定义的列表
-    void DrawSelectNodeTypeButton()
+    // TODO1: 修改BeatNote的类型，把枚举的跟换成自己自定义的列表
+    void DrawSelectNoteTypeButton()
     {
         EditorGUILayout.BeginVertical();
         // 画添加，删除按钮
@@ -520,26 +545,26 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
     }
-    void AddNodeType()
+    void AddNoteType()
     {
-        Debug.Log("[CusaEditorWindows.AddNodeType] Add Node Type.");
-        if (beats.AddNodeType(BeatNodes.default_name, Color.white))
+        Debug.Log("[CusaEditorWindows.AddNoteType] Add Note Type.");
+        if (beats.AddNoteType(BeatNotes.default_name, Color.white))
         {
-            beats.PrintAllNodeType();
+            beats.PrintAllNoteType();
         }
         else
         {
-            Debug.Log("Add Node Type faild");
+            Debug.Log("Add Note Type faild");
         }
     }
-    void DeleteNodeType(string selectName)
+    void DeleteNoteType(string selectName)
     {
-        Debug.Log("[CusaEditorWindows.AddNodeType] Delete Node Type.");
+        Debug.Log("[CusaEditorWindows.AddNoteType] Delete Note Type.");
         // 获取选中的type类型名字
 
-        if (!beats.DeleteNodeType(selectName))
+        if (!beats.DeleteNoteType(selectName))
         {
-            Debug.LogError("Delete Node Type faild");
+            Debug.LogError("Delete Note Type faild");
         }
     }
 
@@ -548,15 +573,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         Rect buttonRect = EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Add", GUILayout.Width(I_buttonWidth)))
         {
-            AddNodeType();
+            AddNoteType();
         }
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Delete", GUILayout.Width(I_buttonWidth)))
         {
             if (b_TypeSelected)
             {
-                DeleteNodeType(S_SelectedNodeTypeName);
-                S_SelectedNodeTypeName = "";
+                DeleteNoteType(S_SelectedNoteTypeName);
+                S_SelectedNoteTypeName = "";
                 b_TypeSelected = false;
 
             }
@@ -579,23 +604,23 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 int index = i * numbers_one_row + j;
                 if (index < beats.GetTypeCount())
                 {
-                    NodeType node = beats.GetTypeByIndex(index);
-                    GUI.color = node.NodeColor;
+                    NoteType node = beats.GetTypeByIndex(index);
+                    GUI.color = node.NoteColor;
                     string buttonname = "xxxxx";
                     if (GUILayout.Button(node.S_TypeName, EditorStyles.toolbarButton, GUILayout.ExpandWidth(true)))
                     {
                         GUI.SetNextControlName(buttonname);
                         GUI.FocusControl(buttonname);
                         b_TypeSelected = true;
-                        S_SelectedNodeTypeName = node.S_TypeName;
-                        Debug.LogFormat("current selected: {0}", S_SelectedNodeTypeName);
+                        S_SelectedNoteTypeName = node.S_TypeName;
+                        Debug.LogFormat("current selected: {0}", S_SelectedNoteTypeName);
                     }
                     GUI.color = Color.white;
                     //GUILayout.FlexibleSpace();
                 }
             }
             EditorGUILayout.EndHorizontal();
-            //GUILayout.Box(NodeType.t2_beatBtn, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
+            //GUILayout.Box(NoteType.t2_beatBtn, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
             //GUILayout.Label(node.S_TypeName, GUILayout.MaxWidth(IconScale * 1.5f), GUILayout.MaxHeight(IconScale));
 
         }
@@ -624,32 +649,32 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(5);
         if (b_TypeSelected)
         {
-            NodeType CurrentNodeType = beats.GetTypeByName(S_SelectedNodeTypeName);
+            NoteType CurrentNoteType = beats.GetTypeByName(S_SelectedNoteTypeName);
 
-            if (CurrentNodeType != null)
+            if (CurrentNoteType != null)
             {
                 EditorGUILayout.LabelField("Color");
                 EditorGUILayout.Space(2);
-                Color new_color = EditorGUILayout.ColorField(CurrentNodeType.NodeColor);
+                Color new_color = EditorGUILayout.ColorField(CurrentNoteType.NoteColor);
                 //EditorGUILayout.EndHorizontal();
                 EditorGUILayout.Space(5);
                 //EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Typename");
                 EditorGUILayout.Space(2);
-                //string new_name = EditorGUILayout.TextField(CurrentNodeType.S_TypeName);
-                string new_name = EditorGUILayout.TextField(CurrentNodeType.S_TypeName);
+                //string new_name = EditorGUILayout.TextField(CurrentNoteType.S_TypeName);
+                string new_name = EditorGUILayout.TextField(CurrentNoteType.S_TypeName);
                 //GUI.SetNextControlName(buttonName);
-                if (new_name != S_SelectedNodeTypeName)
+                if (new_name != S_SelectedNoteTypeName)
                 {
-                    S_SelectedNodeTypeName = new_name;
+                    S_SelectedNoteTypeName = new_name;
                 }
-                beats.UpdateType(CurrentNodeType.S_TypeName, CurrentNodeType.NodeColor, new_name, new_color);
+                beats.UpdateType(CurrentNoteType.S_TypeName, CurrentNoteType.NoteColor, new_name, new_color);
             }
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndVertical();
     }
-    void DrawSelectNodeType_2()
+    void DrawSelectNoteType_2()
     {
         tempRect = EditorGUILayout.BeginHorizontal();
 
@@ -686,7 +711,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     }
 
 
-    void DrawSelectNodeType()
+    void DrawSelectNoteType()
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space(15);
@@ -701,7 +726,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 continue;
             BeatType type = (BeatType)i;
             //HighLight
-            if (type == e_CurNodeType)
+            if (type == e_CurNoteType)
             {
 
                 tempRect = new Rect(totalRect.xMin + 5 - .1f * I_ViewBtnWidth, totalRect.yMin + (i * 1.1f + 1 - .1f) * I_ViewBtnHeight, I_ViewBtnWidth * 1.2f, I_ViewBtnHeight * 1.2f);
@@ -713,19 +738,20 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             GUI.Box(tempRect, type.ToString());
 
             //Draw Btn
-            //GUI.color = GetNodeColor(true, type);
+            //GUI.color = GetNoteColor(true, type);
             tempRect = new Rect(totalRect.xMin + 5, totalRect.yMin + (i * 1.1f + 1) * I_ViewBtnHeight, I_ViewBtnWidth, I_ViewBtnHeight);
             GUI.DrawTexture(tempRect, BeatBtnDict[type]);
             //Btn Click
             if (tempRect.Contains(v2_mousePos))
             {
 
-                if (e_CurNodeType == type && i_curSelectPos != -1)
+                if (e_CurNoteType == type && i_curSelectPos != -1)
                 {
-                    beats.AdjustNode(i_curSelectPos, e_CurNodeType);
+                    // TODO8
+                    beats.AdjustNote(i_curSelectPos, 3, e_CurNoteType);
                 }
-                Debug.LogFormat("[CusaEditorWindow.DrawSelectNodeType] click: {0}", e_CurNodeType.ToString());
-                e_CurNodeType = type;
+                Debug.LogFormat("[CusaEditorWindow.DrawSelectNoteType] click: {0}", e_CurNoteType.ToString());
+                e_CurNoteType = type;
             }
         }
 
@@ -740,22 +766,22 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// </summary>
     void PressKey()
     {
-            Debug.Log("[CusaEditorWindow.PressKey] press key space");
-            if (EAudio.IsAudioPlaying())
+        //Debug.Log("[CusaEditorWindow.PressKey] press key space");
+        if (EAudio.IsAudioPlaying())
+        {
+            if (!b_pause)
             {
-                if (!b_pause)
-                {
-                    pause();
-                }
-                else
-                {
-                    replay();
-                }
+                pause();
             }
             else
             {
-                play();
-            }       
+                replay();
+            }
+        }
+        else
+        {
+            play();
+        }
     }
     void play()
     {
@@ -793,8 +819,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     void EventManage()
     {
-        
-        if(Event.current.type == EventType.KeyDown)
+
+        if (Event.current.type == EventType.KeyDown)
         {
             if (Event.current.keyCode == (KeyCode.Space))
             {
@@ -902,9 +928,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         // 方便观察，之后删掉
 
-        Rect tempSliderRect = new Rect(MainRect.xMin, MainRect.yMin, MainRect.width, I_SliderHeight);
+        Rect tempSliderRect = new Rect(MainRect.xMin, MainRect.yMin, MainRect.width, f_SliderHeight);
         SliderRect = tempSliderRect;
-        Rect tempMainViewRect = new Rect(MainRect.xMin, MainRect.yMin + I_SliderHeight, MainRect.width, MainRect.height - I_SliderHeight);
+        Rect tempMainViewRect = new Rect(MainRect.xMin, MainRect.yMin + f_SliderHeight, MainRect.width, MainRect.height - f_SliderHeight);
         MainViewRect = tempMainViewRect;
 
         DrawSlider(tempSliderRect); // draw 4
@@ -948,7 +974,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     // 不可以点击
                     clickable = false;
                 }
-                if (i_curPos == i_curSelectPos && beats.ContainsNode(i_curPos, soundtrack)) // 选中高亮效果
+                if (i_curPos == i_curSelectPos && beats.ContainsNote(i_curPos, soundtrack)) // 选中高亮效果
                 {
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnWidth - I_ViewBtnWidth * .1f + (i - f_timeParam) * f_viewBeatWidth,
                                     lineRect.yMax - 2f - I_ViewBtnHeight / 2 - I_ViewBtnHeight * .1f,
@@ -961,8 +987,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                                 lineRect.yMax - 2f - I_ViewBtnHeight / 2,
                                 I_ViewBtnWidth, I_ViewBtnHeight);
 
-                BeatType type = beats.ContainsNode(i_curPos, soundtrack) ? beats.GetNodeByPos(i_curPos).e_Type : BeatType.Invalid;
-                string nType = beats.ContainsNode(i_curPos, soundtrack) ? beats.GetNodeByPos(i_curPos).c_Type : NodeType.Invalid;
+                BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
+                string nType = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).c_Type : NoteType.Invalid;
                 if (!totalRect.Contains(tempRect.position))
                 {
                     continue;
@@ -983,7 +1009,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 // mouse click
                 if (clickable && v2_mousePos != Vector2.zero && tempRect.Contains(v2_mousePos))
                 {
-                    //Debug.LogFormat("[CusaEditorWindow.DrawView] click: {0}", e_CurNodeType.ToString());
+                    //Debug.LogFormat("[CusaEditorWindow.DrawView] click: {0}", e_CurNoteType.ToString());
 
                     if (!b_pause)
                     {
@@ -991,26 +1017,27 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     }
                     if (b_isLeftClick)
                     {
-                        if (beats.GetNodeByPos(i_curPos) == null || i_curSelectPos == i_curPos)
+                        if (beats.GetNoteByPos(i_curPos) == null || i_curSelectPos == i_curPos)
                         {
 
 #if (UseCustomType)
-                            Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNodeTypeName);
-                            beats.SetNode(i_curPos, soundtrack, S_SelectedNodeTypeName);
+                            Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNoteTypeName);
+                            // TODO8
+                            beats.SetNote(i_curPos, 3, soundtrack, S_SelectedNoteTypeName);
 #else
-                                beats.SetNode(i_curPos, soundtrack, e_CurNodeType);
+                                beats.SetNote(i_curPos, soundtrack, e_CurNoteType);
 #endif
                         }
                         i_curSelectPos = i_curPos;
                         // 检测是否存在
-                        //Debug.LogFormat("[CusaEditorWindow.DrawView] i_curSelectPos {0}", beats.GetNodeByPos(i_curPos).i_BeatPos);
+                        //Debug.LogFormat("[CusaEditorWindow.DrawView] i_curSelectPos {0}", beats.GetNoteByPos(i_curPos).i_BeatPos);
 
                     }
                     else
                     {
-                        if (beats.ContainsNode(i_curPos, soundtrack))
+                        if (beats.ContainsNote(i_curPos, soundtrack))
                         {
-                            beats.RemoveNode(i_curPos);
+                            beats.RemoveNote(i_curPos);
                             i_curSelectPos = -1;
                         }
 
@@ -1039,7 +1066,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         float startX = totalRect.xMin + I_BeatCheckLine + 5;
         GUI.color = Color.white;
         tempRect = new Rect(startX, totalRect.yMin + 5, temp_width, temp_height);
-        GUI.Box(tempRect, "Beats Set:" + beats.GetNodes().Count.ToString() + "/" + i_totalBeats.ToString());
+        GUI.Box(tempRect, "Beats Set:" + beats.GetNotes().Count.ToString() + "/" + i_totalBeats.ToString());
 
         // 画时间
         GUI.color = Color.white;
@@ -1049,14 +1076,14 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         // 画选择的节点
         if (i_curSelectPos != -1)
         {
-            Node tempNode = beats.GetNodeByPos(i_curSelectPos);
-            if (tempNode == null)
+            Note tempNote = beats.GetNoteByPos(i_curSelectPos);
+            if (tempNote == null)
             {
-                Debug.LogError("[CusaEditorWindow.DrawViewExtra] selected Node doesn't exist.");
+                Debug.LogError("[CusaEditorWindow.DrawViewExtra] selected Note doesn't exist.");
                 return;
             }
 
-            List<float> beatsCenter = beats.BeatsCenterWithOffset(tempNode.i_BeatPos, tempNode.e_Type, f_beatEach);
+            List<float> beatsCenter = beats.BeatsCenterWithOffset(tempNote.i_BeatPos, tempNote.e_Type, f_beatEach);
             GUI.color = Color.white;
             // 如果 beats类型是两个小拍或者三个小拍，则会显示多个beats的信息，因此box的大小会有所改变
 
@@ -1064,9 +1091,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             GUI.Box(tempRect, "");
 
             tempRect = new Rect(startX + temp_width + 30, totalRect.yMin + 5, 110, 20);
-            GUI.Label(tempRect, "Ind:" + beats.GetNodeIndex(i_curSelectPos).ToString() + "/Pos:" + i_curSelectPos.ToString());
+            GUI.Label(tempRect, "Ind:" + beats.GetNoteIndex(i_curSelectPos).ToString() + "/Pos:" + i_curSelectPos.ToString());
             tempRect = new Rect(startX + temp_width + 30, totalRect.yMin + 25, 110, 20);
-            GUI.Label(tempRect, "Type:" + beats.GetNodeByPos(i_curSelectPos).e_Type.ToString());
+            GUI.Label(tempRect, "Type:" + beats.GetNoteByPos(i_curSelectPos).e_Type.ToString());
 
             for (int i = 0; i < beatsCenter.Count; i++)
             {
@@ -1110,7 +1137,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             int sound_track = j + 1;
             // 画线
             GUI.color = lineColor;
-            Rect midBorder = new Rect(totalRect.xMin, totalRect.yMin + I_SliderHeight / (I_SoundTracks + 1) * (j + 1) - 2f, totalRect.width, 2f);
+            Rect midBorder = new Rect(totalRect.xMin, totalRect.yMin + f_SliderHeight / (I_SoundTracks + 1) * (j + 1) - 2f, totalRect.width, 2f);
             GUI.DrawTexture(midBorder, t2_LineTex);
 
             // 画点
@@ -1118,10 +1145,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             for (int i = 0; i < i_totalBeats; i++)
             {
 #if (UseCustomType)
-                string nType = beats.ContainsNode(i, sound_track) ? beats.GetNodeByPos(i).c_Type : NodeType.Invalid;
+                string nType = beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).c_Type : NoteType.Invalid;
                 GUI.color = beats.GetTypeColor(nType);
 #else
-                    GUI.color = GetNodeColor(true, beats.ContainsNode(i, sound_track) ? beats.GetNodeByPos(i).e_Type : BeatType.Invalid);
+                    GUI.color = GetNoteColor(true, beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).e_Type : BeatType.Invalid);
 #endif
 
                 tempRect = new Rect(startX + i * f_sliderBeatWidth, midBorder.yMax - 1f - I_SliderBeatScale / 2, I_SliderBeatScale / 2, 8);
@@ -1134,7 +1161,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     }
 
     #region ColorSetting
-    Color GetNodeColor(bool editable, BeatType type = BeatType.Invalid)
+    Color GetNoteColor(bool editable, BeatType type = BeatType.Invalid)
     {
         if (!editable)
         {
@@ -1160,18 +1187,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         Debug.Log("[CusaEditorWindow.SaveToJson]");
 
-        BeatNodesJson beatjsonObj = new BeatNodesJson();
+        BeatNotesJson beatjsonObj = new BeatNotesJson();
         beatjsonObj.song_name = beats.name;
         beatjsonObj.path = "xxx_path";
         beatjsonObj.bpm = beats.I_BeatPerMinute;
         beatjsonObj.offset = beats.F_BeatStartOffset;
         beatjsonObj.sound_tracks = beats.I_SoundTracks;
-        beatjsonObj.nodes = new List<BeatNodesJson.NodeJson>();
+        beatjsonObj.nodes = new List<BeatNotesJson.NoteJson>();
 
-        List<Node> nodes = beats.GetNodes();
+        List<Note> nodes = beats.GetNotes();
         for (int i = 0; i < nodes.Count; ++i)
         {
-            beatjsonObj.nodes.Add(new BeatNodesJson.NodeJson(i, nodes[i].i_BeatPos, nodes[i].i_sound_track, nodes[i].e_Type));
+
+            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_BeatPos, nodes[i].i_LittlePos, nodes[i].i_sound_track, nodes[i].e_Type));
         }
         string jsonstr = JsonUtility.ToJson(beatjsonObj, true);
         Debug.Log(jsonstr);
@@ -1225,6 +1253,25 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewBeatWidth) - 2;
         Debug.LogFormat("[CusaEditorWindow.CalculateRects] editor window's width: {0}", F_RectWidth);
         Debug.LogFormat("[CusaEditorWindow.CalculateRects] I_BeatsInView: {0}", I_BeatsInView);
+    }
+
+    public static string[] ConvertSlashToUnicodeSlash(string[] texts_)
+    {
+        for (int i = 0;i < 9;++i)
+        {
+            texts_[i].Replace('/', '\u2215');
+        }
+        return texts_;
+
+    }
+
+    public static string[] ConvertUnicodeSlashToSlash(string[] texts_)
+    {
+        for (int i = 0; i < 9; ++i)
+        {
+            texts_[i].Replace('\u2215', '/');
+        }
+        return texts_;
     }
 
 
