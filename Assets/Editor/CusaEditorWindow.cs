@@ -248,7 +248,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             f_sliderDisplayWidth = rightViewWidth;
             b_isSetSliderDisplayWidth = true;
         }
-        
+
         // TODO7
         I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / I_ViewBtnWidth) - 2;
 
@@ -303,6 +303,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     private void Update()
     {
+        // TODO8
+        //PressKey();
         Repaint();
     }
     [MenuItem("Tool/CusaEditorWindow")]
@@ -338,7 +340,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         // 高度指定必须是position.height， 如果是MainRect.height， 高度则不会改变
         LeftRect = EditorGUILayout.BeginVertical(GUILayout.Width(leftViewWidth), GUILayout.Height(position.height));
-        
+
         Rect sidelineRect = new Rect(tempRect.xMax - 1, tempRect.yMin, 1, tempRect.height);
         GUI.color = Color.gray;
         GUI.Box(sidelineRect, t2_LineTex);
@@ -356,12 +358,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //GUI.color = Color.green;
         //GUI.Box(TypeEditRect, "");
         EventManage(); // draw 2
-        
-        #if (UseCustomType)
-            DrawSelectNodeType_2();
-        #else
+
+#if (UseCustomType)
+        DrawSelectNodeType_2();
+#else
             DrawSelectNodeType();
-        #endif
+#endif
 
         EditorGUILayout.EndVertical();
     }
@@ -586,7 +588,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         GUI.FocusControl(buttonname);
                         b_TypeSelected = true;
                         S_SelectedNodeTypeName = node.S_TypeName;
-                        Debug.LogFormat("current selected: {0}",S_SelectedNodeTypeName);
+                        Debug.LogFormat("current selected: {0}", S_SelectedNodeTypeName);
                     }
                     GUI.color = Color.white;
                     //GUILayout.FlexibleSpace();
@@ -637,7 +639,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 //string new_name = EditorGUILayout.TextField(CurrentNodeType.S_TypeName);
                 string new_name = EditorGUILayout.TextField(CurrentNodeType.S_TypeName);
                 //GUI.SetNextControlName(buttonName);
-                if(new_name != S_SelectedNodeTypeName)
+                if (new_name != S_SelectedNodeTypeName)
                 {
                     S_SelectedNodeTypeName = new_name;
                 }
@@ -650,7 +652,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     void DrawSelectNodeType_2()
     {
         tempRect = EditorGUILayout.BeginHorizontal();
-        
+
         EditorGUILayout.Space(15);
         EditorGUILayout.BeginVertical();
 
@@ -701,7 +703,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             //HighLight
             if (type == e_CurNodeType)
             {
-            
+
                 tempRect = new Rect(totalRect.xMin + 5 - .1f * I_ViewBtnWidth, totalRect.yMin + (i * 1.1f + 1 - .1f) * I_ViewBtnHeight, I_ViewBtnWidth * 1.2f, I_ViewBtnHeight * 1.2f);
                 GUI.DrawTexture(tempRect, t2_BeatBtn_gray);
             }
@@ -731,6 +733,29 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(15);
         EditorGUILayout.EndHorizontal();
 
+    }
+
+    /// <summary>
+    /// 空格控制播放暂停
+    /// </summary>
+    void PressKey()
+    {
+            Debug.Log("[CusaEditorWindow.PressKey] press key space");
+            if (EAudio.IsAudioPlaying())
+            {
+                if (!b_pause)
+                {
+                    pause();
+                }
+                else
+                {
+                    replay();
+                }
+            }
+            else
+            {
+                play();
+            }       
     }
     void play()
     {
@@ -768,6 +793,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     void EventManage()
     {
+        
+        if(Event.current.type == EventType.KeyDown)
+        {
+            if (Event.current.keyCode == (KeyCode.Space))
+            {
+                PressKey();
+            }
+
+        }
         if (Event.current.isMouse)
         {
             if (Event.current.type == EventType.MouseDown)
@@ -926,7 +960,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnWidth + (i - f_timeParam) * f_viewBeatWidth,
                                 lineRect.yMax - 2f - I_ViewBtnHeight / 2,
                                 I_ViewBtnWidth, I_ViewBtnHeight);
-                
+
                 BeatType type = beats.ContainsNode(i_curPos, soundtrack) ? beats.GetNodeByPos(i_curPos).e_Type : BeatType.Invalid;
                 string nType = beats.ContainsNode(i_curPos, soundtrack) ? beats.GetNodeByPos(i_curPos).c_Type : NodeType.Invalid;
                 if (!totalRect.Contains(tempRect.position))
@@ -934,17 +968,17 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     continue;
                 }
 #if (UseCustomType)
-                    if (!clickable)
-                        GUI.color = Color.black;
-                    else
-                        GUI.color = beats.GetTypeColor(nType);
-                    GUI.DrawTexture(tempRect, t2_BeatBtn_gray, ScaleMode.ScaleAndCrop);
+                if (!clickable)
+                    GUI.color = Color.black;
+                else
+                    GUI.color = beats.GetTypeColor(nType);
+                GUI.DrawTexture(tempRect, t2_BeatBtn_gray, ScaleMode.ScaleAndCrop);
 #else
                     if (!clickable)
                         GUI.color = Color.black;
                     GUI.DrawTexture(tempRect, BeatBtnDict[type], ScaleMode.ScaleAndCrop);
 #endif
-                    GUI.color = Color.white;
+                GUI.color = Color.white;
 
                 // mouse click
                 if (clickable && v2_mousePos != Vector2.zero && tempRect.Contains(v2_mousePos))
@@ -961,8 +995,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         {
 
 #if (UseCustomType)
-                                Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNodeTypeName);
-                                beats.SetNode(i_curPos, soundtrack, S_SelectedNodeTypeName);
+                            Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNodeTypeName);
+                            beats.SetNode(i_curPos, soundtrack, S_SelectedNodeTypeName);
 #else
                                 beats.SetNode(i_curPos, soundtrack, e_CurNodeType);
 #endif
@@ -1053,7 +1087,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         SliderBarRect = new Rect(SliderRect.xMin, SliderRect.yMax - 10, f_sliderDisplayWidth, 20);
 
         curPos = GUI.HorizontalSlider(SliderBarRect, curPos, 0, 1);
-       
+
         SliderLineRect = new Rect(SliderBarRect.xMin + f_sliderDisplayWidth * curPos, SliderRect.yMin, 1, SliderRect.height);
         GUI.DrawTexture(SliderLineRect, t2_LineTex);
 
@@ -1084,8 +1118,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             for (int i = 0; i < i_totalBeats; i++)
             {
 #if (UseCustomType)
-                    string nType = beats.ContainsNode(i, sound_track) ? beats.GetNodeByPos(i).c_Type : NodeType.Invalid;
-                    GUI.color = beats.GetTypeColor(nType);
+                string nType = beats.ContainsNode(i, sound_track) ? beats.GetNodeByPos(i).c_Type : NodeType.Invalid;
+                GUI.color = beats.GetTypeColor(nType);
 #else
                     GUI.color = GetNodeColor(true, beats.ContainsNode(i, sound_track) ? beats.GetNodeByPos(i).e_Type : BeatType.Invalid);
 #endif
@@ -1099,7 +1133,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     }
 
-#region ColorSetting
+    #region ColorSetting
     Color GetNodeColor(bool editable, BeatType type = BeatType.Invalid)
     {
         if (!editable)
@@ -1118,9 +1152,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 return Color.green;
         }
     }
-#endregion
+    #endregion
 
-#region SaveToJson
+    #region SaveToJson
 
     void SaveToJson()
     {
@@ -1163,7 +1197,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         i_curSelectPos = -1;
         beats.Clear();
     }
-#endregion
+    #endregion
 
     // 检测窗口大小位置发生改变
     IEnumerator CheckForResize()
