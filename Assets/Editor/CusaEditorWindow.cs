@@ -1,4 +1,4 @@
-﻿#define UseCustomType
+﻿#define UseLittleBeat
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,17 +42,17 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// 小节选项
     /// </summary>
     string[] little_beats_options = new string[] { "2", "3", "4", "6", "8", "12", "16", "24", "32" };
-    int[] little_beats_values = {2,3,4,6,8,12,16,24,32};
+    List<int> little_beats_values = new List<int>();
     int little_beats_index = 0;
 
     /// <summary>
-    /// note的宽度
+    /// note的宽度， 默认为4
     /// </summary>
-    int I_ViewBtnWidth; // 节拍大小调整
+    int I_ViewLineWidth; // 节拍大小调整
     /// <summary>
     /// note的高度
     /// </summary>
-    int I_ViewBtnHeight;
+    int I_ViewLineHeight;
     /// <summary>
     /// 高亮的扩大比例
     /// </summary>
@@ -70,8 +70,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     float f_sliderBeatWidth;
     float f_sliderStartOffset;
     int i_totalBeats;
-    Texture2D t2_BeatBtn;
-    Texture2D t2_BeatBtn_gray;
+    int i_totalLittleBeats;
+    Texture2D t2_Beatline;
+    Texture2D t2_Beatline_gray;
     Dictionary<BeatType, Texture2D> BeatBtnDict;
 
     Texture2D t2_LineTex;
@@ -85,6 +86,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     float f_curTime;
     float f_totalTime;
     float f_beatEach;
+    float f_littleBeatEach;
     int i_curSelectPos;
 
     //float f_beatToScale;
@@ -147,8 +149,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         I_BeatCheckLine = 50;
         f_SliderHeight = 80;
         I_BeatsInView = 16;
-        I_ViewBtnWidth = 4;
-        I_ViewBtnHeight = 80;
+        I_ViewLineWidth = 4;
+        I_ViewLineHeight = 60;
         f_ViewBtnHighLightScale = 2f;
         I_SliderBeatScale = 2;
         I_buttonWidth = 90;
@@ -245,14 +247,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         f_totalTime = beats.AC_ClipToPlay.length;
 
-        little_beats = 4;
+        // TODO8：初始化小节
+        little_beats = beats.I_LittleBeats;
+        little_beats_values = new List<int> { 2, 3, 4, 6, 8, 12, 16, 24, 32 };
+        little_beats_index = little_beats_values.FindIndex(xx => xx == beats.I_LittleBeats);
 
         f_beatEach = 60f / beats.I_BeatPerMinute;
-        //f_beatCheck = 0f;
-        //f_beatToScale = 0f;
+        f_littleBeatEach = f_beatEach / little_beats;
+        Debug.Log("[CusaEditorWindow.InitData] f_littleBeatEac: " + f_littleBeatEach.ToString());
         f_viewBeatWidth = 40.0f;
 
         i_totalBeats = (int)(f_totalTime / f_beatEach);
+        i_totalLittleBeats = (int)(f_totalTime / f_littleBeatEach);
+        Debug.Log("[CusaEditorWindow.InitData] i_totalLittleBeats: " + i_totalLittleBeats.ToString());
 
         F_RectWidth = win_width;
 
@@ -265,15 +272,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             b_isSetSliderDisplayWidth = true;
         }
 
-        // TODO7
-        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / I_ViewBtnWidth) - 2;
-
-
-        //Debug.LogFormat("[CusaEditorWindow.InitData] editor window's width: {0}", F_RectWidth);
-        //Debug.LogFormat("[CusaEditorWindow.InitData] I_BeatsInView: {0}", I_BeatsInView);
+        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewBeatWidth) - 2;
 
         f_sliderStartOffset = beats.F_BeatStartOffset > 0 ? rightViewWidth * (beats.F_BeatStartOffset / f_totalTime) : 0;
-        //f_sliderBeatWidth = 2.0f;
+
         f_sliderBeatWidth = (f_sliderDisplayWidth - f_sliderStartOffset) / i_totalBeats;
 
         I_SoundTracks = beats.I_SoundTracks;
@@ -290,18 +292,18 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             f_SliderHeight = win_height / 3 + (I_SoundTracks - 2) * 20;
         }
 
-        t2_BeatBtn = new Texture2D(1, 1);
-        t2_BeatBtn_gray = new Texture2D(1, 1);
+        t2_Beatline = new Texture2D(1, 1);
+        t2_Beatline_gray = new Texture2D(1, 1);
         // 设置颜色
-        //t2_BeatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn");
-        //t2_BeatBtn_gray = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
+        //t2_Beatline = Resources.Load<Texture2D>("Texture/Editor/BeatBtn");
+        //t2_Beatline_gray = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
         BeatBtnDict = new Dictionary<BeatType, Texture2D>();
-        BeatBtnDict.Add(BeatType.Invalid, t2_BeatBtn_gray);
+        BeatBtnDict.Add(BeatType.Invalid, t2_Beatline_gray);
         BeatBtnDict.Add(BeatType.Single, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-blue"));
         BeatBtnDict.Add(BeatType.Point, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-green"));
         BeatBtnDict.Add(BeatType.Longkey, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-red"));
 
-        if (t2_BeatBtn == null)
+        if (t2_Beatline == null)
             Debug.LogError("[CusaEditorWindow.OnEnable] button load failed.");
         t2_LineTex = new Texture2D(1, 1);
         b_pause = false;
@@ -377,12 +379,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //GUI.color = Color.green;
         //GUI.Box(TypeEditRect, "");
         EventManage(); // draw 2
-
-#if (UseCustomType)
         DrawSelectNoteType_2();
-#else
-            DrawSelectNoteType();
-#endif
+
 
         EditorGUILayout.EndVertical();
     }
@@ -451,8 +449,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(10);
 
         // TODO8
-        EditorGUILayout.Popup(little_beats_index, little_beats_options);
-        //beats.I_LittleBeats = little_beats_values[little_beats_index];
+        little_beats_index = EditorGUILayout.Popup("节奏", little_beats_index, little_beats_options);
+        beats.I_LittleBeats = little_beats_values[little_beats_index];
         EditorGUILayout.Space(10);
 
         EditorGUILayout.EndVertical();
@@ -620,7 +618,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 }
             }
             EditorGUILayout.EndHorizontal();
-            //GUILayout.Box(NoteType.t2_beatBtn, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
+            //GUILayout.Box(NoteType.t2_Beatline, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
             //GUILayout.Label(node.S_TypeName, GUILayout.MaxWidth(IconScale * 1.5f), GUILayout.MaxHeight(IconScale));
 
         }
@@ -728,18 +726,17 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             //HighLight
             if (type == e_CurNoteType)
             {
-
-                tempRect = new Rect(totalRect.xMin + 5 - .1f * I_ViewBtnWidth, totalRect.yMin + (i * 1.1f + 1 - .1f) * I_ViewBtnHeight, I_ViewBtnWidth * 1.2f, I_ViewBtnHeight * 1.2f);
-                GUI.DrawTexture(tempRect, t2_BeatBtn_gray);
+                tempRect = new Rect(totalRect.xMin + 5 - .1f * I_ViewLineWidth, totalRect.yMin + (i * 1.1f + 1 - .1f) * I_ViewLineHeight, I_ViewLineWidth * 1.2f, I_ViewLineHeight * 1.2f);
+                GUI.DrawTexture(tempRect, t2_Beatline_gray);
             }
             //Draw Tips
             GUI.color = Color.white;
-            tempRect = new Rect(totalRect.xMin + 5 + I_ViewBtnWidth + 10f, totalRect.yMin + (i * 1.1f + 1) * I_ViewBtnHeight, 80, I_ViewBtnWidth);
+            tempRect = new Rect(totalRect.xMin + 5 + I_ViewLineWidth + 10f, totalRect.yMin + (i * 1.1f + 1) * I_ViewLineHeight, 80, I_ViewLineWidth);
             GUI.Box(tempRect, type.ToString());
 
             //Draw Btn
             //GUI.color = GetNoteColor(true, type);
-            tempRect = new Rect(totalRect.xMin + 5, totalRect.yMin + (i * 1.1f + 1) * I_ViewBtnHeight, I_ViewBtnWidth, I_ViewBtnHeight);
+            tempRect = new Rect(totalRect.xMin + 5, totalRect.yMin + (i * 1.1f + 1) * I_ViewLineHeight, I_ViewLineWidth, I_ViewLineHeight);
             GUI.DrawTexture(tempRect, BeatBtnDict[type]);
             //Btn Click
             if (tempRect.Contains(v2_mousePos))
@@ -940,29 +937,118 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     void DrawView(Rect totalRect)
     {
-        //Draw Main View                                                                                                                                                                                                                                                                                                                                      
+        //Draw Main View    
+        // TODO8
         float f_time = f_curTime - beats.F_BeatStartOffset;
-        int i_startPos = Mathf.FloorToInt(f_time / f_beatEach);
+        int i_startPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
 
-        // 该变量用于控制画面随时间的偏移
-        float f_timeParam = f_time >= 0 ? (f_time % f_beatEach) / f_beatEach : f_time / f_beatEach;
-
+        float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : (f_time / f_littleBeatEach);
         for (int j = 0; j < I_SoundTracks; j++)
         {
-            // TODO7：把中间的线删掉换成两边的线
+            // 画上下两条轨道的线
             GUI.color = lineColor;
-            float up = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) - I_ViewBtnHeight / 2;
-            float down = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) + I_ViewBtnHeight / 2;
+            float up = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) - I_ViewLineHeight / 2;
+            float down = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) + I_ViewLineHeight / 2;
             Rect lineRect = new Rect(totalRect.xMin, up, totalRect.width, 2f);
             GUI.Box(lineRect, t2_LineTex);
-
             lineRect = new Rect(totalRect.xMin, down, totalRect.width, 2f);
-            GUI.Box(lineRect, t2_LineTex);
+            GUI.Box(lineRect, t2_LineTex);         
+            int soundtrack = j + 1;     
+            //GUI.Box(lineRect, t2_LineTex);
 
-            lineRect = new Rect(totalRect.xMin, totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f, totalRect.width, 2f);
+#if (UseLittleBeat)
 
-            int soundtrack = j + 1;
+            for (int i = 0; i <= I_BeatsInView; ++i)
+            {
+                int i_curPos = i_startPos + i;
+                bool clickable = true;
+                // 如果当前为止在offset前面
+                if (i_curPos <= 0 || i_curPos > i_totalLittleBeats)
+                {
+                    // 不可以点击
+                    clickable = false;
+                }
+                #region DrawNotes
+                // TODO 8.2 
+                if (i_curPos % little_beats == 1)
+                {
+                    //画长画粗
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth - 0.1f,
+                        lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
+                        I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
+                    //颜色
+                    GUI.color = Color.white;
+                }
+                else
+                {
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth,
+                        lineRect.yMax - 2f - I_ViewLineHeight,
+                        I_ViewLineWidth, I_ViewLineHeight);
+                    //颜色
+                    GUI.color = Color.green;
+                }
+                BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
+                string nType = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).c_Type : NoteType.Invalid;
 
+                // 超出范围的就不画
+                if (!totalRect.Contains(tempRect.position))
+                {
+                    Debug.Log(i_curPos);
+                    continue;
+                }
+
+                if (!clickable)
+                    GUI.color = Color.black;
+
+                // TODO8                
+                GUI.Box(tempRect, t2_Beatline_gray);
+                if(nType != NoteType.Invalid)
+                {
+                    GUI.color = beats.GetTypeColor(nType);
+                    Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, 8, tempRect.height);
+                    GUI.Box(tempNoteRect, t2_Beatline_gray);
+                }
+                GUI.color = Color.white;
+                #endregion
+
+                #region mouseClick
+
+                Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + I_ViewLineWidth , tempRect.height );
+                if (clickable && v2_mousePos != Vector2.zero && noteIntervalRect.Contains(v2_mousePos))
+                {
+                    if (!b_pause)
+                    {
+                        pause();
+                    }
+                    if (b_isLeftClick)
+                    {
+                        if (beats.GetNoteByPos(i_curPos) == null || i_curSelectPos == i_curPos)
+                        {
+
+                            Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNoteTypeName);
+                            // TODO8
+                            beats.SetNote(i_curPos, 3, soundtrack, S_SelectedNoteTypeName);
+
+                        }
+                        i_curSelectPos = i_curPos;
+                        // 检测是否存在
+                        //Debug.LogFormat("[CusaEditorWindow.DrawView] i_curSelectPos {0}", beats.GetNoteByPos(i_curPos).i_BeatPos);
+
+                    }
+                    else
+                    {
+                        if (beats.ContainsNote(i_curPos, soundtrack))
+                        {
+                            beats.RemoveNote(i_curPos);
+                            i_curSelectPos = -1;
+                        }
+                    }
+                }
+                #endregion
+
+
+            }
+#else
             for (int i = 0; i < I_BeatsInView; i++)
             {
                 int i_curPos = i_startPos + i;
@@ -974,18 +1060,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     // 不可以点击
                     clickable = false;
                 }
+                // TODO8.3
                 if (i_curPos == i_curSelectPos && beats.ContainsNote(i_curPos, soundtrack)) // 选中高亮效果
                 {
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnWidth - I_ViewBtnWidth * .1f + (i - f_timeParam) * f_viewBeatWidth,
-                                    lineRect.yMax - 2f - I_ViewBtnHeight / 2 - I_ViewBtnHeight * .1f,
-                                    I_ViewBtnWidth * 1.2f, I_ViewBtnHeight * 1.2f);
-                    GUI.DrawTexture(tempRect, t2_BeatBtn_gray);
-
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth - I_ViewLineWidth * .1f + (i - f_timeParam) * f_viewBeatWidth,
+                                    lineRect.yMax - 2f - I_ViewLineHeight / 2 - I_ViewLineHeight * .1f,
+                                    I_ViewLineWidth * 1.2f, I_ViewLineHeight * 1.2f);
+                    GUI.DrawTexture(tempRect, t2_Beatline_gray);
                 }
-                // 画note
-                tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewBtnWidth + (i - f_timeParam) * f_viewBeatWidth,
-                                lineRect.yMax - 2f - I_ViewBtnHeight / 2,
-                                I_ViewBtnWidth, I_ViewBtnHeight);
+                
+                // TODO 8.2 
+                tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth + (i - f_timeParam) * f_viewBeatWidth,
+                                lineRect.yMax - 2f - I_ViewLineHeight / 2,
+                                I_ViewLineWidth, I_ViewLineHeight);
 
                 BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
                 string nType = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).c_Type : NoteType.Invalid;
@@ -993,17 +1080,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 {
                     continue;
                 }
-#if (UseCustomType)
+
                 if (!clickable)
                     GUI.color = Color.black;
                 else
                     GUI.color = beats.GetTypeColor(nType);
-                GUI.DrawTexture(tempRect, t2_BeatBtn_gray, ScaleMode.ScaleAndCrop);
-#else
-                    if (!clickable)
-                        GUI.color = Color.black;
-                    GUI.DrawTexture(tempRect, BeatBtnDict[type], ScaleMode.ScaleAndCrop);
-#endif
+                GUI.DrawTexture(tempRect, t2_Beatline_gray, ScaleMode.ScaleAndCrop);
+
                 GUI.color = Color.white;
 
                 // mouse click
@@ -1020,13 +1103,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         if (beats.GetNoteByPos(i_curPos) == null || i_curSelectPos == i_curPos)
                         {
 
-#if (UseCustomType)
+
                             Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNoteTypeName);
                             // TODO8
                             beats.SetNote(i_curPos, 3, soundtrack, S_SelectedNoteTypeName);
-#else
-                                beats.SetNote(i_curPos, soundtrack, e_CurNoteType);
-#endif
+
                         }
                         i_curSelectPos = i_curPos;
                         // 检测是否存在
@@ -1040,11 +1121,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                             beats.RemoveNote(i_curPos);
                             i_curSelectPos = -1;
                         }
-
                     }
                 }
 
             }
+#endif
         }
         DrawViewExtra(totalRect, v2_mousePos);
         //Draw Beat Check Line(Red)
@@ -1066,6 +1147,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         float startX = totalRect.xMin + I_BeatCheckLine + 5;
         GUI.color = Color.white;
         tempRect = new Rect(startX, totalRect.yMin + 5, temp_width, temp_height);
+        // TODO: 没必要，可以删掉
         GUI.Box(tempRect, "Beats Set:" + beats.GetNotes().Count.ToString() + "/" + i_totalBeats.ToString());
 
         // 画时间
@@ -1142,14 +1224,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
             // 画点
             float startX = totalRect.xMin + I_SliderBeatScale + f_sliderStartOffset;
+            // TODO8： 重新考虑Slider的绘画策略
             for (int i = 0; i < i_totalBeats; i++)
             {
-#if (UseCustomType)
+
                 string nType = beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).c_Type : NoteType.Invalid;
                 GUI.color = beats.GetTypeColor(nType);
-#else
-                    GUI.color = GetNoteColor(true, beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).e_Type : BeatType.Invalid);
-#endif
+
 
                 tempRect = new Rect(startX + i * f_sliderBeatWidth, midBorder.yMax - 1f - I_SliderBeatScale / 2, I_SliderBeatScale / 2, 8);
                 GUI.DrawTexture(tempRect, t2_LineTex);
@@ -1257,7 +1338,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     public static string[] ConvertSlashToUnicodeSlash(string[] texts_)
     {
-        for (int i = 0;i < 9;++i)
+        for (int i = 0; i < 9; ++i)
         {
             texts_[i].Replace('/', '\u2215');
         }
