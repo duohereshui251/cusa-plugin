@@ -71,10 +71,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     float f_sliderStartOffset;
     int i_totalBeats;
     int i_totalLittleBeats;
-    Texture2D t2_Beatline;
-    Texture2D t2_Beatline_gray;
-    Dictionary<BeatType, Texture2D> BeatBtnDict;
-
+    Texture2D t2_Thickline;
+    Texture2D t2_Thinline;
     Texture2D t2_LineTex;
 
     // 歌曲控制信息
@@ -149,7 +147,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         I_BeatCheckLine = 50;
         f_SliderHeight = 80;
         I_BeatsInView = 16;
-        I_ViewLineWidth = 4;
+        I_ViewLineWidth = 8;
         I_ViewLineHeight = 60;
         f_ViewBtnHighLightScale = 2f;
         I_SliderBeatScale = 2;
@@ -292,18 +290,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             f_SliderHeight = win_height / 3 + (I_SoundTracks - 2) * 20;
         }
 
-        t2_Beatline = new Texture2D(1, 1);
-        t2_Beatline_gray = new Texture2D(1, 1);
-        // 设置颜色
-        //t2_Beatline = Resources.Load<Texture2D>("Texture/Editor/BeatBtn");
-        //t2_Beatline_gray = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
-        BeatBtnDict = new Dictionary<BeatType, Texture2D>();
-        BeatBtnDict.Add(BeatType.Invalid, t2_Beatline_gray);
-        BeatBtnDict.Add(BeatType.Single, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-blue"));
-        BeatBtnDict.Add(BeatType.Point, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-green"));
-        BeatBtnDict.Add(BeatType.Longkey, Resources.Load<Texture2D>("Texture/Editor/BeatBtn-red"));
+        t2_Thickline = Resources.Load<Texture2D>("Texture/Editor/thick_line");
+        t2_Thinline = Resources.Load<Texture2D>("Texture/Editor/thin_line_gray");
 
-        if (t2_Beatline == null)
+
+        if (t2_Thickline == null)
             Debug.LogError("[CusaEditorWindow.OnEnable] button load failed.");
         t2_LineTex = new Texture2D(1, 1);
         b_pause = false;
@@ -618,7 +609,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 }
             }
             EditorGUILayout.EndHorizontal();
-            //GUILayout.Box(NoteType.t2_Beatline, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
+            //GUILayout.Box(NoteType.t2_Thickline, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
             //GUILayout.Label(node.S_TypeName, GUILayout.MaxWidth(IconScale * 1.5f), GUILayout.MaxHeight(IconScale));
 
         }
@@ -706,56 +697,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(15);
         EditorGUILayout.EndHorizontal();
-    }
-
-
-    void DrawSelectNoteType()
-    {
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.Space(15);
-
-        Rect totalRect = EditorGUILayout.BeginVertical();
-        GUI.color = viewColor;
-        GUI.Box(totalRect, "");
-
-        foreach (int i in System.Enum.GetValues(typeof(BeatType)))
-        {
-            if (i == -1)
-                continue;
-            BeatType type = (BeatType)i;
-            //HighLight
-            if (type == e_CurNoteType)
-            {
-                tempRect = new Rect(totalRect.xMin + 5 - .1f * I_ViewLineWidth, totalRect.yMin + (i * 1.1f + 1 - .1f) * I_ViewLineHeight, I_ViewLineWidth * 1.2f, I_ViewLineHeight * 1.2f);
-                GUI.DrawTexture(tempRect, t2_Beatline_gray);
-            }
-            //Draw Tips
-            GUI.color = Color.white;
-            tempRect = new Rect(totalRect.xMin + 5 + I_ViewLineWidth + 10f, totalRect.yMin + (i * 1.1f + 1) * I_ViewLineHeight, 80, I_ViewLineWidth);
-            GUI.Box(tempRect, type.ToString());
-
-            //Draw Btn
-            //GUI.color = GetNoteColor(true, type);
-            tempRect = new Rect(totalRect.xMin + 5, totalRect.yMin + (i * 1.1f + 1) * I_ViewLineHeight, I_ViewLineWidth, I_ViewLineHeight);
-            GUI.DrawTexture(tempRect, BeatBtnDict[type]);
-            //Btn Click
-            if (tempRect.Contains(v2_mousePos))
-            {
-
-                if (e_CurNoteType == type && i_curSelectPos != -1)
-                {
-                    // TODO8
-                    beats.AdjustNote(i_curSelectPos, 3, e_CurNoteType);
-                }
-                Debug.LogFormat("[CusaEditorWindow.DrawSelectNoteType] click: {0}", e_CurNoteType.ToString());
-                e_CurNoteType = type;
-            }
-        }
-
-        EditorGUILayout.EndVertical();
-        EditorGUILayout.Space(15);
-        EditorGUILayout.EndHorizontal();
-
     }
 
     /// <summary>
@@ -976,16 +917,18 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
                         I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
-                    //颜色
-                    GUI.color = Color.white;
+                    
+                    GUI.DrawTexture(tempRect, t2_Thickline);
+                    
                 }
                 else
                 {
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth,
                         lineRect.yMax - 2f - I_ViewLineHeight,
                         I_ViewLineWidth, I_ViewLineHeight);
-                    //颜色
-                    GUI.color = Color.green;
+                    GUI.DrawTexture(tempRect, t2_Thinline);
+
+
                 }
                 BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
                 string nType = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).c_Type : NoteType.Invalid;
@@ -1001,12 +944,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     GUI.color = Color.black;
 
                 // TODO8                
-                GUI.Box(tempRect, t2_Beatline_gray);
+                GUI.Box(tempRect, t2_Thinline);
                 if(nType != NoteType.Invalid)
                 {
                     GUI.color = beats.GetTypeColor(nType);
                     Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, 8, tempRect.height);
-                    GUI.Box(tempNoteRect, t2_Beatline_gray);
+                    GUI.DrawTexture(tempNoteRect, t2_Thinline);
                 }
                 GUI.color = Color.white;
                 #endregion
@@ -1066,7 +1009,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth - I_ViewLineWidth * .1f + (i - f_timeParam) * f_viewBeatWidth,
                                     lineRect.yMax - 2f - I_ViewLineHeight / 2 - I_ViewLineHeight * .1f,
                                     I_ViewLineWidth * 1.2f, I_ViewLineHeight * 1.2f);
-                    GUI.DrawTexture(tempRect, t2_Beatline_gray);
+                    GUI.DrawTexture(tempRect, t2_Thinline);
                 }
                 
                 // TODO 8.2 
@@ -1085,7 +1028,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     GUI.color = Color.black;
                 else
                     GUI.color = beats.GetTypeColor(nType);
-                GUI.DrawTexture(tempRect, t2_Beatline_gray, ScaleMode.ScaleAndCrop);
+                GUI.DrawTexture(tempRect, t2_Thinline, ScaleMode.ScaleAndCrop);
 
                 GUI.color = Color.white;
 
