@@ -46,11 +46,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     int little_beats_index = 0;
 
     /// <summary>
-    /// note的宽度， 默认为4
+    /// 线的宽度， 默认为4
     /// </summary>
     int I_ViewLineWidth; // 节拍大小调整
     /// <summary>
-    /// note的高度
+    /// 线的高度
     /// </summary>
     int I_ViewLineHeight;
     /// <summary>
@@ -59,20 +59,41 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     float f_ViewBtnHighLightScale;
 
     int I_SliderBeatScale;
-    int I_BeatCheckLine; // 判定线位置
+    /// <summary>
+    /// 判定线位置， ，默认50
+    /// </summary>
+    int I_BeatCheckLine;  
     BeatType e_CurNoteType;
     int I_buttonWidth;
     int I_SoundTracks;
 
     // 节拍的数值信息和样式
     float f_soundTracksWidth;
-    float f_viewBeatWidth;
+    /// <summary>
+    /// 每根线的间隔距离， 默认40.0f
+    /// </summary>
+    float f_viewIntervalWidth;
+    /// <summary>
+    /// 每个note的宽度, 默认12
+    /// </summary>
+    float f_viewNoteWidth;
     float f_sliderBeatWidth;
     float f_sliderStartOffset;
     int i_totalBeats;
     int i_totalLittleBeats;
+    /// <summary>
+    /// 绿色粗线
+    /// </summary>
     Texture2D t2_Thickline;
+    /// <summary>
+    /// 蓝色细线
+    /// </summary>
     Texture2D t2_Thinline;
+    /// <summary>
+    /// note
+    /// </summary>
+    Texture2D t2_Note;
+
     Texture2D t2_LineTex;
 
     // 歌曲控制信息
@@ -253,8 +274,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         f_beatEach = 60f / beats.I_BeatPerMinute;
         f_littleBeatEach = f_beatEach / little_beats;
         Debug.Log("[CusaEditorWindow.InitData] f_littleBeatEac: " + f_littleBeatEach.ToString());
-        f_viewBeatWidth = 40.0f;
-
+        f_viewIntervalWidth = 40.0f;
+        f_viewNoteWidth = 12.0f;
         i_totalBeats = (int)(f_totalTime / f_beatEach);
         i_totalLittleBeats = (int)(f_totalTime / f_littleBeatEach);
         Debug.Log("[CusaEditorWindow.InitData] i_totalLittleBeats: " + i_totalLittleBeats.ToString());
@@ -270,7 +291,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             b_isSetSliderDisplayWidth = true;
         }
 
-        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewBeatWidth) - 2;
+        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewIntervalWidth) - 2;
 
         f_sliderStartOffset = beats.F_BeatStartOffset > 0 ? rightViewWidth * (beats.F_BeatStartOffset / f_totalTime) : 0;
 
@@ -291,8 +312,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         }
 
         t2_Thickline = Resources.Load<Texture2D>("Texture/Editor/thick_line");
-        t2_Thinline = Resources.Load<Texture2D>("Texture/Editor/thin_line_gray");
-
+        t2_Thinline = Resources.Load<Texture2D>("Texture/Editor/thin_line_blue");
+        t2_Note = Resources.Load<Texture2D>("Texture/Editor/note");
 
         if (t2_Thickline == null)
             Debug.LogError("[CusaEditorWindow.OnEnable] button load failed.");
@@ -893,8 +914,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             Rect lineRect = new Rect(totalRect.xMin, up, totalRect.width, 2f);
             GUI.Box(lineRect, t2_LineTex);
             lineRect = new Rect(totalRect.xMin, down, totalRect.width, 2f);
-            GUI.Box(lineRect, t2_LineTex);         
-            int soundtrack = j + 1;     
+            GUI.Box(lineRect, t2_LineTex);
+            int soundtrack = j + 1;
             //GUI.Box(lineRect, t2_LineTex);
 
 #if (UseLittleBeat)
@@ -911,10 +932,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 }
                 #region DrawNotes
                 // TODO 8.2 
-                if (i_curPos % little_beats == 1)
+                if (i_curPos % little_beats == 0)
                 {
                     //画长画粗
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth - 0.1f,
+                    
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
                         I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
                     
@@ -923,7 +945,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 }
                 else
                 {
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewBeatWidth,
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth,
                         lineRect.yMax - 2f - I_ViewLineHeight,
                         I_ViewLineWidth, I_ViewLineHeight);
                     GUI.DrawTexture(tempRect, t2_Thinline);
@@ -936,7 +958,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 // 超出范围的就不画
                 if (!totalRect.Contains(tempRect.position))
                 {
-                    Debug.Log(i_curPos);
+                    //Debug.Log(i_curPos);
                     continue;
                 }
 
@@ -944,19 +966,21 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     GUI.color = Color.black;
 
                 // TODO8                
-                GUI.Box(tempRect, t2_Thinline);
-                if(nType != NoteType.Invalid)
+                if (nType != NoteType.Invalid)
                 {
+                    //TODO8: 画note
                     GUI.color = beats.GetTypeColor(nType);
-                    Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, 8, tempRect.height);
-                    GUI.DrawTexture(tempNoteRect, t2_Thinline);
+                    Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, f_viewNoteWidth, tempRect.height);
+                    GUI.DrawTexture(tempNoteRect, t2_Note);
                 }
                 GUI.color = Color.white;
                 #endregion
 
                 #region mouseClick
 
-                Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + I_ViewLineWidth , tempRect.height );
+                Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + f_viewIntervalWidth-5, tempRect.height );
+
+
                 if (clickable && v2_mousePos != Vector2.zero && noteIntervalRect.Contains(v2_mousePos))
                 {
                     if (!b_pause)
@@ -1006,14 +1030,14 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 // TODO8.3
                 if (i_curPos == i_curSelectPos && beats.ContainsNote(i_curPos, soundtrack)) // 选中高亮效果
                 {
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth - I_ViewLineWidth * .1f + (i - f_timeParam) * f_viewBeatWidth,
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth - I_ViewLineWidth * .1f + (i - f_timeParam) * f_viewIntervalWidth,
                                     lineRect.yMax - 2f - I_ViewLineHeight / 2 - I_ViewLineHeight * .1f,
                                     I_ViewLineWidth * 1.2f, I_ViewLineHeight * 1.2f);
                     GUI.DrawTexture(tempRect, t2_Thinline);
                 }
                 
                 // TODO 8.2 
-                tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth + (i - f_timeParam) * f_viewBeatWidth,
+                tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + I_ViewLineWidth + (i - f_timeParam) * f_viewIntervalWidth,
                                 lineRect.yMax - 2f - I_ViewLineHeight / 2,
                                 I_ViewLineWidth, I_ViewLineHeight);
 
@@ -1274,7 +1298,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         F_RectWidth = position.width;
         rightViewWidth = F_RectWidth - leftViewWidth;
-        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewBeatWidth) - 2;
+        I_BeatsInView = Mathf.FloorToInt((rightViewWidth - I_BeatCheckLine) / f_viewIntervalWidth) - 2;
         Debug.LogFormat("[CusaEditorWindow.CalculateRects] editor window's width: {0}", F_RectWidth);
         Debug.LogFormat("[CusaEditorWindow.CalculateRects] I_BeatsInView: {0}", I_BeatsInView);
     }
