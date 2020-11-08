@@ -338,7 +338,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     private void Update()
     {
         // TODO8
-        //PressKey();
+        //PlayPressKey();
         Repaint();
     }
     [MenuItem("Tool/CusaEditorWindow")]
@@ -722,11 +722,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     }
 
     /// <summary>
+    /// 回车添加note
+    /// </summary>
+    void AddNotePressKey()
+    {
+        
+    }
+
+    /// <summary>
     /// 空格控制播放暂停
     /// </summary>
-    void PressKey()
+    void PlayPressKey()
     {
-        //Debug.Log("[CusaEditorWindow.PressKey] press key space");
+        //Debug.Log("[CusaEditorWindow.PlayPressKey] press key space");
         if (EAudio.IsAudioPlaying())
         {
             if (!b_pause)
@@ -784,7 +792,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         {
             if (Event.current.keyCode == (KeyCode.Space))
             {
-                PressKey();
+                PlayPressKey();
+            }
+            if(Event.current.keyCode == (KeyCode.Return))
+            {
+                AddNotePressKey();
             }
 
         }
