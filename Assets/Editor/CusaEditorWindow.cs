@@ -11,7 +11,7 @@ using NUnit.Framework.Constraints;
 using System;
 using UnityEditorInternal;
 using Object = UnityEngine.Object;
-
+using NUnit.Framework;
 
 public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 {
@@ -78,9 +78,24 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// </summary>
     float f_viewNoteWidth;
     float f_sliderBeatWidth;
+    int I_sliderBlockWidth;
     float f_sliderStartOffset;
     int i_totalBeats;
     int i_totalLittleBeats;
+
+    /// <summary>
+    /// 预览每条轨道的高度
+    /// </summary>
+    float PerTrackHeight;
+    /// <summary>
+    /// 预览每条轨道的block数量
+    /// </summary>
+    int blocks;
+    /// <summary>
+    /// 预览每个block表达多少个小节
+    /// </summary>
+    int PerBlockBeats;
+
     /// <summary>
     /// 绿色粗线
     /// </summary>
@@ -252,6 +267,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     public void InitData(float win_width, float win_height)
     {
         //this.beats = beats;
+
         var x = (Screen.currentResolution.width - win_width) / 2;
         var y = (Screen.currentResolution.height - win_height) / 2;
 
@@ -301,10 +317,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         f_sliderBeatWidth = (f_sliderDisplayWidth - f_sliderStartOffset) / i_totalBeats;
 
+        I_sliderBlockWidth = 4;
+
         I_SoundTracks = beats.I_SoundTracks;
 
         f_SliderHeight = win_height / 3;
 
+        blocks = (int)f_sliderDisplayWidth / I_sliderBlockWidth;
+        PerBlockBeats = (i_totalLittleBeats / (blocks - 1)) + 1;
+        Debug.LogFormat("[CusaEditorWindow.InitData] blocks: {0}, PerBlockBeats: {1}", blocks , PerBlockBeats);
         if (I_SoundTracks > 0)
         {
             f_soundTracksWidth = (win_height - f_SliderHeight) / I_SoundTracks;
@@ -326,7 +347,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         i_pauseSample = 0;
         i_curSelectPos = -1;
         EditorApplication.update += Update;
-
+        justForDebug.on = true;
     }
 
     private void OnDisable()
@@ -770,6 +791,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         b_pause = false;
         i_pauseSample = 0;
         EAudio.PlayClip();
+        SetSongPos(beats.F_BeatStartOffset);
     }
 
     void stop()
@@ -779,6 +801,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         b_pause = false;
         i_pauseSample = 0;
         EAudio.StopClip();
+        //SetSongPos(beats.F_BeatStartOffset);
+
         //f_beatCheck = 0f;
     }
 
@@ -788,6 +812,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         i_pauseSample = EAudio.GetCurSample();
         EAudio.PauseClip();
         b_pause = true;
+        SetSongPos(f_curTime + (f_littleBeatEach - (f_curTime - beats.F_BeatStartOffset) % f_littleBeatEach));
     }
 
     void replay()
@@ -828,11 +853,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             {
                 if (Event.current.delta.y > 0)
                 {
-                    SetSongPos(f_curTime - .5f);
+                    SetSongPos(f_curTime - f_littleBeatEach);
                 }
-                else if (Event.current.delta.y < 0)
+                else if (Event.current.delta.y < 0 )
                 {
-                    SetSongPos(f_curTime + .5f);
+                    SetSongPos(f_curTime + f_littleBeatEach);
                 }
 
             }
@@ -844,14 +869,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             {
                 if (MainViewRect.Contains(v2_mousePos) || SliderRect.Contains(v2_mousePos))
                 {
-                    float offsetTime = 0.1f;
                     if (Event.current.delta.x > 0)
                     {
-                        SetSongPos(f_curTime - offsetTime);
+                        SetSongPos(f_curTime - f_littleBeatEach);
                     }
                     else if (Event.current.delta.x < 0)
                     {
-                        SetSongPos(f_curTime + offsetTime);
+                        SetSongPos(f_curTime + f_littleBeatEach);
                     }
                 }
 
@@ -919,18 +943,17 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         DrawSlider(tempSliderRect); // draw 4
         DrawView(tempMainViewRect); // draw 3
-
     }
 
     void DrawView(Rect totalRect)
     {
         //Draw Main View    
         // TODO8
-        float f_time = f_curTime - beats.F_BeatStartOffset;
+        float f_time = f_curTime;
         // Pos以小节为单位
         int i_startPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
 
-        float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : (f_time / f_littleBeatEach);
+        float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : 0;
         for (int j = 0; j < I_SoundTracks; j++)
         {
             // 画上下两条轨道的线
@@ -960,14 +983,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 // TODO 8.2 
                 if (i_curPos % little_beats == 0)
                 {
-                    //画长画粗
-                    
+                    //画长画粗                   
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
                         I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
                     
-                    GUI.DrawTexture(tempRect, t2_Thickline);
-                    
+                    GUI.DrawTexture(tempRect, t2_Thickline);                   
                 }
                 else
                 {
@@ -975,10 +996,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         lineRect.yMax - 2f - I_ViewLineHeight,
                         I_ViewLineWidth, I_ViewLineHeight);
                     GUI.DrawTexture(tempRect, t2_Thinline);
-
-
                 }
-                BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
+                //BeatType type = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).e_Type : BeatType.Invalid;
                 string nType = beats.ContainsNote(i_curPos, soundtrack) ? beats.GetNoteByPos(i_curPos).c_Type : NoteType.Invalid;
 
                 // 超出范围的就不画
@@ -1005,7 +1024,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 #region mouseClick
 
                 Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + f_viewIntervalWidth-5, tempRect.height );
-
 
                 if (clickable && v2_mousePos != Vector2.zero && noteIntervalRect.Contains(v2_mousePos))
                 {
@@ -1191,14 +1209,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         SliderBarRect = new Rect(SliderRect.xMin, SliderRect.yMax - 10, f_sliderDisplayWidth, 20);
 
         curPos = GUI.HorizontalSlider(SliderBarRect, curPos, 0, 1);
-
+        
         SliderLineRect = new Rect(SliderBarRect.xMin + f_sliderDisplayWidth * curPos, SliderRect.yMin, 1, SliderRect.height);
         GUI.DrawTexture(SliderLineRect, t2_LineTex);
-
-
         if (oldPos != curPos)
         {
-            SetSongPos(curPos * f_totalTime);
+            float curTime = curPos * f_totalTime;
+            curTime = curTime + (f_littleBeatEach - ((curTime - beats.F_BeatStartOffset) % f_littleBeatEach));
+            curPos = curTime / f_totalTime;
+            SetSongPos(curTime);
         }
     }
 
@@ -1207,27 +1226,56 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         GUI.color = upsliderColor;
         GUI.Box(totalRect, "");
 
-        DrawSliderLine();
-
-        for (int j = 0; j < I_SoundTracks; ++j)
+        PerTrackHeight = (totalRect.height - 3 * I_SoundTracks) / I_SoundTracks;
+        for(int i = 1;i <= I_SoundTracks - 1; ++i)
         {
-            int sound_track = j + 1;
-            // 画线
+            Rect templineRect = new Rect(totalRect.xMin, totalRect.yMin + i * (PerTrackHeight + 3) - 3, f_sliderDisplayWidth, 3);
             GUI.color = lineColor;
-            Rect midBorder = new Rect(totalRect.xMin, totalRect.yMin + f_SliderHeight / (I_SoundTracks + 1) * (j + 1) - 2f, totalRect.width, 2f);
-            GUI.DrawTexture(midBorder, t2_LineTex);
+            GUI.DrawTexture(templineRect, t2_LineTex);
+        }
+        float startX = totalRect.xMin;
+        float endY = totalRect.yMin;
 
-            // 画点
-            float startX = totalRect.xMin + I_SliderBeatScale + f_sliderStartOffset;
-            // TODO8： 重新考虑Slider的绘画策略
-            for (int i = 0; i < i_totalBeats; i++)
+        for(int i = 0; i < I_SoundTracks; ++i)
+        {
+            startX = totalRect.xMin;
+            endY = totalRect.yMin + (i + 1) * (PerTrackHeight + 3) - 3;
+            for (int j = 0; j < blocks; ++j)
             {
-                string nType = beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).c_Type : NoteType.Invalid;
-                GUI.color = beats.GetTypeColor(nType);
-                tempRect = new Rect(startX + i * f_sliderBeatWidth, midBorder.yMax - 1f - I_SliderBeatScale / 2, I_SliderBeatScale / 2, 8);
-                GUI.DrawTexture(tempRect, t2_LineTex);
+                int blockNotes = beats.GetPerBlockNotes(j, PerBlockBeats, i+1);
+                // 计算block note数量的函数
+                //float blockHeight = PerTrackHeight;
+                float blockHeight = PerTrackHeight * blockNotes / PerBlockBeats;
+                if (justForDebug.on)
+                {
+                    Debug.LogFormat("[BeatNodes.GetPerBlockNotes] track: {0}, blockNotes: {1}, blockHeight: {2}", i + 1, blockNotes, blockHeight);
+                    justForDebug.on = false;
+                }
+                Rect tempBlock = new Rect(startX + j * I_sliderBlockWidth, endY - blockHeight , I_sliderBlockWidth - 1, blockHeight);
+                GUI.color = Color.red;
+                GUI.DrawTexture(tempBlock, t2_LineTex);
             }
         }
+        DrawSliderLine();
+        //for (int j = 0; j < I_SoundTracks; ++j)
+        //{
+        //    int sound_track = j + 1;
+        //    // 画线
+        //    GUI.color = lineColor;
+        //    Rect midBorder = new Rect(totalRect.xMin, totalRect.yMin + f_SliderHeight / (I_SoundTracks + 1) * (j + 1) - 2f, totalRect.width, 2f);
+        //    GUI.DrawTexture(midBorder, t2_LineTex);
+
+        //    // 画点
+        //    float startX = totalRect.xMin + I_SliderBeatScale + f_sliderStartOffset;
+        //    // TODO8： 重新考虑Slider的绘画策略
+        //    for (int i = 0; i < i_totalBeats; i++)
+        //    {
+        //        string nType = beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).c_Type : NoteType.Invalid;
+        //        GUI.color = beats.GetTypeColor(nType);
+        //        tempRect = new Rect(startX + i * f_sliderBeatWidth, midBorder.yMax - 1f - I_SliderBeatScale / 2, I_SliderBeatScale / 2, 8);
+        //        GUI.DrawTexture(tempRect, t2_LineTex);
+        //    }
+        //}
     }
     #region ColorSetting
     Color GetNoteColor(bool editable, BeatType type = BeatType.Invalid)

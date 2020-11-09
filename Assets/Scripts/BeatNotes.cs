@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Permissions;
 using UnityEngine;
 
+public class justForDebug
+{
+    static public bool on = true;
+}
 public enum BeatType
 {
     Invalid = -1,
@@ -72,6 +77,19 @@ public class BeatNotes : ScriptableObject
             }
             
         });
+    }
+    public int GetPerBlockNotes(int blockIndex, int perBlockBeats, int trackIndex)
+    {
+        int res = 0;
+        int startBeatPos = blockIndex * perBlockBeats;
+        for(int i = 0; i < perBlockBeats;++i)
+        {
+            if(ContainsNote(startBeatPos + i, trackIndex))
+            {
+                res += 1;
+            }
+        }
+        return res;
     }
     public bool ContainsNote(int littleBeatPos, int sound_track)
     {

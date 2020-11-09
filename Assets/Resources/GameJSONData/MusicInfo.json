@@ -2,86 +2,128 @@
     "song_name": "lll",
     "path": "xxx_path",
     "bpm": 128,
-    "offset": 1.4500000476837159,
+    "offset": 3.299999952316284,
     "little_beats": 0,
     "sound_tracks": 4,
     "nodes": [
         {
             "ID": 0,
-            "littleBeatPos": 40,
+            "littleBeatPos": 1,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 1,
-            "littleBeatPos": 70,
-            "sound_track": 1,
+            "littleBeatPos": 2,
+            "sound_track": 2,
             "nodeType": 0
         },
         {
             "ID": 2,
-            "littleBeatPos": 105,
-            "sound_track": 1,
+            "littleBeatPos": 3,
+            "sound_track": 3,
             "nodeType": 0
         },
         {
             "ID": 3,
-            "littleBeatPos": 135,
-            "sound_track": 1,
+            "littleBeatPos": 4,
+            "sound_track": 4,
             "nodeType": 0
         },
         {
             "ID": 4,
-            "littleBeatPos": 168,
-            "sound_track": 1,
+            "littleBeatPos": 5,
+            "sound_track": 3,
             "nodeType": 0
         },
         {
             "ID": 5,
-            "littleBeatPos": 196,
-            "sound_track": 1,
+            "littleBeatPos": 6,
+            "sound_track": 2,
             "nodeType": 0
         },
         {
             "ID": 6,
-            "littleBeatPos": 233,
+            "littleBeatPos": 7,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 7,
-            "littleBeatPos": 261,
+            "littleBeatPos": 8,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 8,
-            "littleBeatPos": 298,
-            "sound_track": 1,
+            "littleBeatPos": 9,
+            "sound_track": 3,
             "nodeType": 0
         },
         {
             "ID": 9,
-            "littleBeatPos": 325,
-            "sound_track": 1,
+            "littleBeatPos": 10,
+            "sound_track": 4,
             "nodeType": 0
         },
         {
             "ID": 10,
-            "littleBeatPos": 358,
-            "sound_track": 1,
+            "littleBeatPos": 11,
+            "sound_track": 2,
             "nodeType": 0
         },
         {
             "ID": 11,
-            "littleBeatPos": 391,
+            "littleBeatPos": 12,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 12,
-            "littleBeatPos": 422,
+            "littleBeatPos": 13,
+            "sound_track": 3,
+            "nodeType": 0
+        },
+        {
+            "ID": 13,
+            "littleBeatPos": 14,
+            "sound_track": 2,
+            "nodeType": 0
+        },
+        {
+            "ID": 14,
+            "littleBeatPos": 15,
             "sound_track": 1,
+            "nodeType": 0
+        },
+        {
+            "ID": 15,
+            "littleBeatPos": 16,
+            "sound_track": 2,
+            "nodeType": 0
+        },
+        {
+            "ID": 16,
+            "littleBeatPos": 17,
+            "sound_track": 3,
+            "nodeType": 0
+        },
+        {
+            "ID": 17,
+            "littleBeatPos": 18,
+            "sound_track": 3,
+            "nodeType": 0
+        },
+        {
+            "ID": 18,
+            "littleBeatPos": 19,
+            "sound_track": 1,
+            "nodeType": 0
+        },
+        {
+            "ID": 19,
+            "littleBeatPos": 20,
+            "sound_track": 3,
             "nodeType": 0
         }
     ]
