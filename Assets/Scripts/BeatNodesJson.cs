@@ -20,16 +20,14 @@ public class BeatNotesJson
     [Serializable]
     public class NoteJson
     {
-        public NoteJson(int id,int beatPos,int littlePos, int sound_track, BeatType type)
+        public NoteJson(int id,int littlePos, int sound_track, BeatType type)
         {
             this.ID = id;
-            this.beatPos = beatPos;
             this.littleBeatPos = littlePos;
             this.sound_track = sound_track;
             this.nodeType = type;
         }
         public int ID;
-        public int beatPos;
         public int littleBeatPos;
         public int sound_track;
         public BeatType nodeType;

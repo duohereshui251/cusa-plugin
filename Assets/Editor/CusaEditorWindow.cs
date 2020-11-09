@@ -124,7 +124,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // 布局数值信息
     float leftViewWidth;
     float rightViewWidth;
-    // 预览长度不会随着窗口的改变而变长，而会随着鼠标滚轮放大缩小变长
+   
+    /// <summary>
+    /// 预览长度, 不会随着窗口的改变而变长，而会随着鼠标滚轮放大缩小变长
+    /// </summary>
     float f_sliderDisplayWidth;
     bool b_isSetSliderDisplayWidth = false;
 
@@ -143,6 +146,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     Rect SliderLineRect;
     Rect SliderBarRect;
     Rect MainViewRect;
+    Rect NoteSettingRect;
+
 
     // 选中的类型名称
     string S_SelectedNoteTypeName;
@@ -189,7 +194,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         if (nodesInfo)
         {
             EditorWindow.GetWindow<CusaEditorWindow>();
-
             return true;
         }
         return false;
@@ -352,6 +356,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     private void OnGUI()
     {
+        //GUIUtility.keyboardControl = 0;
         if (!Editable)
         {
             return;
@@ -366,7 +371,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         }
         LeftView();
         RightView();
+
         EditorGUILayout.EndHorizontal();
+
 
         v2_mousePos = Vector2.zero;
     }
@@ -374,7 +381,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         // 高度指定必须是position.height， 如果是MainRect.height， 高度则不会改变
         LeftRect = EditorGUILayout.BeginVertical(GUILayout.Width(leftViewWidth), GUILayout.Height(position.height));
-
+        
         Rect sidelineRect = new Rect(tempRect.xMax - 1, tempRect.yMin, 1, tempRect.height);
         GUI.color = Color.gray;
         GUI.Box(sidelineRect, t2_LineTex);
@@ -417,6 +424,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(15);
         DrawSaveAndClearButton();
         EditorGUILayout.Space(15);
+
+        EditorGUILayout.Space(15);
+
         EditorGUILayout.EndVertical();
 
     }
@@ -443,9 +453,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space(15);
 
-        Rect t = EditorGUILayout.BeginVertical(GUILayout.MaxWidth(150));
-        //GUI.color = viewColor;
-        //GUI.Box(t, "");
+        NoteSettingRect = EditorGUILayout.BeginVertical(GUILayout.MaxWidth(150));
+        //GUI.color = Color.white;
+        //GUI.Box(NoteSettingRect, "");
         GUILayout.BeginHorizontal();
         GUILayout.Label("song name", GUILayout.Width(75));
         GUILayout.FlexibleSpace();
@@ -633,7 +643,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             EditorGUILayout.EndHorizontal();
             //GUILayout.Box(NoteType.t2_Thickline, GUILayout.Width(IconScale), GUILayout.Height(IconScale));
             //GUILayout.Label(node.S_TypeName, GUILayout.MaxWidth(IconScale * 1.5f), GUILayout.MaxHeight(IconScale));
-
         }
 
         GUILayout.FlexibleSpace();
@@ -726,7 +735,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// </summary>
     void AddNotePressKey()
     {
-        
+        float f_time = f_curTime - beats.F_BeatStartOffset;
+        int CurPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
+        Debug.LogFormat("[CusaEditor.AddNotePressKey] Add note to CurPos {0}", CurPos);
+        // TODO12
+        beats.SetNote(CurPos,1, S_SelectedNoteTypeName);
     }
 
     /// <summary>
@@ -844,7 +857,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
             }
         }
-
     }
 
     //滚轮到不同位置播放歌曲
@@ -915,6 +927,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //Draw Main View    
         // TODO8
         float f_time = f_curTime - beats.F_BeatStartOffset;
+        // Pos以小节为单位
         int i_startPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
 
         float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : (f_time / f_littleBeatEach);
@@ -1007,7 +1020,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
                             Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNoteTypeName);
                             // TODO8
-                            beats.SetNote(i_curPos, 3, soundtrack, S_SelectedNoteTypeName);
+                            beats.SetNote(i_curPos, soundtrack, S_SelectedNoteTypeName);
 
                         }
                         i_curSelectPos = i_curPos;
@@ -1145,7 +1158,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 return;
             }
 
-            List<float> beatsCenter = beats.BeatsCenterWithOffset(tempNote.i_BeatPos, tempNote.e_Type, f_beatEach);
+            List<float> beatsCenter = beats.BeatsCenterWithOffset(tempNote.i_LittleBeatPos, tempNote.e_Type, f_beatEach);
             GUI.color = Color.white;
             // 如果 beats类型是两个小拍或者三个小拍，则会显示多个beats的信息，因此box的大小会有所改变
 
@@ -1167,9 +1180,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     }
 
+    /// <summary>
+    /// 滑动条
+    /// </summary>
     void DrawSliderLine()
     {
-
         float curPos = f_curTime / f_totalTime;
         float oldPos = curPos;
         GUI.color = Color.white;
@@ -1207,20 +1222,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             // TODO8： 重新考虑Slider的绘画策略
             for (int i = 0; i < i_totalBeats; i++)
             {
-
                 string nType = beats.ContainsNote(i, sound_track) ? beats.GetNoteByPos(i).c_Type : NoteType.Invalid;
                 GUI.color = beats.GetTypeColor(nType);
-
-
                 tempRect = new Rect(startX + i * f_sliderBeatWidth, midBorder.yMax - 1f - I_SliderBeatScale / 2, I_SliderBeatScale / 2, 8);
                 GUI.DrawTexture(tempRect, t2_LineTex);
             }
-
         }
-
-
     }
-
     #region ColorSetting
     Color GetNoteColor(bool editable, BeatType type = BeatType.Invalid)
     {
@@ -1260,7 +1268,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         for (int i = 0; i < nodes.Count; ++i)
         {
 
-            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_BeatPos, nodes[i].i_LittlePos, nodes[i].i_sound_track, nodes[i].e_Type));
+            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].e_Type));
         }
         string jsonstr = JsonUtility.ToJson(beatjsonObj, true);
         Debug.Log(jsonstr);

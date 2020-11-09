@@ -2,156 +2,85 @@
     "song_name": "lll",
     "path": "xxx_path",
     "bpm": 128,
-    "offset": 3.299999952316284,
+    "offset": 1.4500000476837159,
+    "little_beats": 0,
     "sound_tracks": 4,
     "nodes": [
         {
             "ID": 0,
-            "beatPos": 0,
+            "littleBeatPos": 40,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 1,
-            "beatPos": 1,
-            "sound_track": 2,
+            "littleBeatPos": 70,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 2,
-            "beatPos": 2,
-            "sound_track": 3,
+            "littleBeatPos": 105,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 3,
-            "beatPos": 3,
-            "sound_track": 4,
+            "littleBeatPos": 135,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 4,
-            "beatPos": 4,
-            "sound_track": 3,
+            "littleBeatPos": 168,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 5,
-            "beatPos": 5,
-            "sound_track": 2,
+            "littleBeatPos": 196,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 6,
-            "beatPos": 6,
+            "littleBeatPos": 233,
             "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 7,
-            "beatPos": 7,
-            "sound_track": 2,
+            "littleBeatPos": 261,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 8,
-            "beatPos": 8,
-            "sound_track": 3,
+            "littleBeatPos": 298,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 9,
-            "beatPos": 9,
-            "sound_track": 4,
+            "littleBeatPos": 325,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 10,
-            "beatPos": 10,
-            "sound_track": 3,
+            "littleBeatPos": 358,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 11,
-            "beatPos": 11,
-            "sound_track": 2,
+            "littleBeatPos": 391,
+            "sound_track": 1,
             "nodeType": 0
         },
         {
             "ID": 12,
-            "beatPos": 12,
-            "sound_track": 1,
-            "nodeType": 0
-        },
-        {
-            "ID": 13,
-            "beatPos": 13,
-            "sound_track": 2,
-            "nodeType": 0
-        },
-        {
-            "ID": 14,
-            "beatPos": 14,
-            "sound_track": 3,
-            "nodeType": 0
-        },
-        {
-            "ID": 15,
-            "beatPos": 15,
-            "sound_track": 4,
-            "nodeType": 0
-        },
-        {
-            "ID": 16,
-            "beatPos": 16,
-            "sound_track": 3,
-            "nodeType": 0
-        },
-        {
-            "ID": 17,
-            "beatPos": 17,
-            "sound_track": 2,
-            "nodeType": 0
-        },
-        {
-            "ID": 18,
-            "beatPos": 18,
-            "sound_track": 1,
-            "nodeType": 0
-        },
-        {
-            "ID": 19,
-            "beatPos": 19,
-            "sound_track": 2,
-            "nodeType": 0
-        },
-        {
-            "ID": 20,
-            "beatPos": 20,
-            "sound_track": 3,
-            "nodeType": 0
-        },
-        {
-            "ID": 21,
-            "beatPos": 21,
-            "sound_track": 4,
-            "nodeType": 0
-        },
-        {
-            "ID": 22,
-            "beatPos": 22,
-            "sound_track": 3,
-            "nodeType": 0
-        },
-        {
-            "ID": 23,
-            "beatPos": 23,
-            "sound_track": 2,
-            "nodeType": 0
-        },
-        {
-            "ID": 24,
-            "beatPos": 24,
+            "littleBeatPos": 422,
             "sound_track": 1,
             "nodeType": 0
         }

@@ -62,13 +62,9 @@ public class BeatNotes : ScriptableObject
     public void ForceSort()
     {
         l_Notes.Sort((left, right) => { 
-            if(left.i_BeatPos > right.i_BeatPos)
+            if(left.i_LittleBeatPos > right.i_LittleBeatPos)
             {
                 return 1;
-            }
-            else if(left.i_BeatPos == right.i_BeatPos)
-            {
-                return left.i_LittlePos >= right.i_LittlePos ? 1 : -1;
             }
             else
             {
@@ -77,111 +73,111 @@ public class BeatNotes : ScriptableObject
             
         });
     }
-    public bool ContainsNote(int beatPos, int sound_track)
+    public bool ContainsNote(int littleBeatPos, int sound_track)
     {
-        tempNote = l_Notes.Find(p => p.i_BeatPos == beatPos );
+        tempNote = l_Notes.Find(p => p.i_LittleBeatPos == littleBeatPos );
         return tempNote != null && tempNote.i_sound_track == sound_track;
     }
-    //public void SetNote(int beatPos, int sound_track, BeatType type)
+    //public void SetNote(int littleBeatPos, int sound_track, BeatType type)
     //{
-    //    tempNote = GetNoteByPos(beatPos);
+    //    tempNote = GetNoteByPos(littleBeatPos);
     //    if (tempNote != null)
     //    {
     //        int index = l_Notes.IndexOf(tempNote);
-    //        Note n = new Note(beatPos, sound_track, type);
+    //        Note n = new Note(littleBeatPos, sound_track, type);
     //        l_Notes[index] = n;
     //    }
     //    else
     //    {
     //        for (int i = 0; i < l_Notes.Count; i++)
     //        {
-    //            if (l_Notes[i].i_BeatPos > beatPos)
+    //            if (l_Notes[i].i_LittleBeatPos > littleBeatPos)
     //            {
-    //                l_Notes.Insert(i, new Note(beatPos, sound_track, type));
+    //                l_Notes.Insert(i, new Note(littleBeatPos, sound_track, type));
     //                return;
     //            }
     //        }
-    //        l_Notes.Add(new Note(beatPos, sound_track, type));
+    //        l_Notes.Add(new Note(littleBeatPos, sound_track, type));
     //    }
     //}
 
-    public void SetNote(int beatPos, int littleBeatPos,int sound_track, string typename)
+    public void SetNote(int littleBeatPos, int sound_track, string typename)
     {
-        tempNote = GetNoteByPos(beatPos);
+        tempNote = GetNoteByPos(littleBeatPos);
 
         if (tempNote != null)
         {
             int index = l_Notes.IndexOf(tempNote);
-            Note n = new Note(beatPos, littleBeatPos, sound_track, typename);
+            Note n = new Note(littleBeatPos, sound_track, typename);
             l_Notes[index] = n;
         }
         else
         {
             for (int i = 0; i < l_Notes.Count; i++)
             {
-                if (l_Notes[i].i_BeatPos > beatPos)
+                if (l_Notes[i].i_LittleBeatPos > littleBeatPos)
                 {
-                    l_Notes.Insert(i, new Note(beatPos, littleBeatPos,sound_track, typename));
+                    l_Notes.Insert(i, new Note(littleBeatPos,sound_track, typename));
                     return;
                 }
             }
-            l_Notes.Add(new Note(beatPos, littleBeatPos, sound_track, typename));
+            l_Notes.Add(new Note(littleBeatPos, sound_track, typename));
         }
 
     }
-    public void AdjustNote(int beatPos, int littleBeatPos,BeatType type)
+    public void AdjustNote(int littleBeatPos, BeatType type)
     {
 
-        tempNote = GetNoteByPos(beatPos);
+        tempNote = GetNoteByPos(littleBeatPos);
         if (tempNote != null)
         {
             int index = l_Notes.IndexOf(tempNote);
-            Note n = new Note(beatPos, littleBeatPos, tempNote.i_sound_track, type);
+            Note n = new Note(littleBeatPos, tempNote.i_sound_track, type);
             l_Notes[index] = n;
         }
         else
         {
-            Debug.LogError("Can't Adjust A Unexisted Note!Pos:" + beatPos);
+            Debug.LogError("Can't Adjust A Unexisted Note!Pos:" + littleBeatPos);
         }
     }
 
-    public void AdjustNote(int beatPos, int littleBeatPos,string typename)
-    {
+    //public void AdjustNote(int littleBeatPos, int littleBeatPos,string typename)
+    //{
 
-        tempNote = GetNoteByPos(beatPos);
-        if (tempNote != null)
-        {
-            int index = l_Notes.IndexOf(tempNote);
-            Note n = new Note(beatPos, littleBeatPos ,tempNote.i_sound_track, typename);
-            l_Notes[index] = n;
-        }
-        else
-        {
-            Debug.LogError("Can't Adjust A Unexisted Note!Pos:" + beatPos);
-        }
+    //    tempNote = GetNoteByPos(littleBeatPos);
+    //    if (tempNote != null)
+    //    {
+    //        int index = l_Notes.IndexOf(tempNote);
+    //        Note n = new Note(littleBeatPos ,tempNote.i_sound_track, typename);
+    //        l_Notes[index] = n;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Can't Adjust A Unexisted Note!Pos:" + littleBeatPos);
+    //    }
 
-    }
-    public void RemoveNote(int beatPos)
+    //}
+    public void RemoveNote(int littleBeatPos)
     {
-        tempNote = GetNoteByPos(beatPos);
+        tempNote = GetNoteByPos(littleBeatPos);
         if (tempNote == null)
         {
-            Debug.LogWarning(beatPos.ToString() + " Note Not Found Howdf U Remove A UnAddNote In Editor?");
+            Debug.LogWarning(littleBeatPos.ToString() + " Note Not Found Howdf U Remove A UnAddNote In Editor?");
             return;
         }
         l_Notes.Remove(tempNote);
     }
-    public Note GetNoteByPos(int beatPos)
+    public Note GetNoteByPos(int littleBeatPos)
     {
-        return l_Notes.Find(p => p.i_BeatPos == beatPos);
+        return l_Notes.Find(p => p.i_LittleBeatPos == littleBeatPos);
     }
     public Note GetNoteByIndex(int index)
     {
         return l_Notes[index];
     }
-    public int GetNoteIndex(int beatPos)
+    public int GetNoteIndex(int littleBeatPos)
     {
-        return l_Notes.FindIndex(p => p.i_BeatPos == beatPos);
+        return l_Notes.FindIndex(p => p.i_LittleBeatPos == littleBeatPos);
     }
     public Dictionary<float, int> GetTotalBeatsCenterWithOffset(float f_beatEach)
     {
@@ -194,25 +190,24 @@ public class BeatNotes : ScriptableObject
             {
                 case BeatType.Single:
                     {
-                        dic.Add(F_BeatStartOffset + l_Notes[i].i_BeatPos * f_beatEach, i);
+                        dic.Add(F_BeatStartOffset + l_Notes[i].i_LittleBeatPos * f_beatEach, i);
                     }
                     break;
                 case BeatType.Longkey:
                     {
-
-                        dic.Add(F_BeatStartOffset + l_Notes[i].i_BeatPos * f_beatEach, i);
+                        dic.Add(F_BeatStartOffset + l_Notes[i].i_LittleBeatPos * f_beatEach, i);
                     }
                     break;
                 case BeatType.Point:
                     {
-                        dic.Add(F_BeatStartOffset + l_Notes[i].i_BeatPos * f_beatEach, i);
+                        dic.Add(F_BeatStartOffset + l_Notes[i].i_LittleBeatPos * f_beatEach, i);
                     }
                     break;
             }
         }
         return dic;
     }
-    public List<float> BeatsCenterWithOffset(int beatPos, BeatType type, float f_beatEach)
+    public List<float> BeatsCenterWithOffset(int littleBeatPos, BeatType type, float f_beatEach)
     {
         // TODO: 处理一节拍有多个小拍的情况
         List<float> beatMids = new List<float>();
@@ -220,28 +215,28 @@ public class BeatNotes : ScriptableObject
         {
             case BeatType.Single:
                 {
-                    beatMids.Add(F_BeatStartOffset + beatPos * f_beatEach);
+                    beatMids.Add(F_BeatStartOffset + littleBeatPos * f_beatEach);
                 }
                 break;
             case BeatType.Longkey:
                 {
 
-                    beatMids.Add(F_BeatStartOffset + beatPos * f_beatEach);
+                    beatMids.Add(F_BeatStartOffset + littleBeatPos * f_beatEach);
                 }
                 break;
             case BeatType.Point:
                 {
-                    beatMids.Add(F_BeatStartOffset + beatPos * f_beatEach);
+                    beatMids.Add(F_BeatStartOffset + littleBeatPos * f_beatEach);
                 }
                 break;
         }
         return beatMids;
     }
 
-    public List<float> BeatsCenterWithOffset(int beatPos, string  typename, float f_beatEach)
+    public List<float> BeatsCenterWithOffset(int littleBeatPos, string  typename, float f_beatEach)
     {
         List<float> beatMids = new List<float>();
-        beatMids.Add(F_BeatStartOffset + beatPos * f_beatEach);
+        beatMids.Add(F_BeatStartOffset + littleBeatPos * f_beatEach);
         return beatMids;
 
     }
@@ -339,24 +334,22 @@ public class BeatNotes : ScriptableObject
 [System.Serializable]
 public class Note
 {
-    public Note(int beatPos,int littlePos, int sound_track, BeatType type)
+    public Note(int littleBeatPos, int sound_track, BeatType type)
     {
-        i_BeatPos = beatPos;
-        i_LittlePos = littlePos;
+        i_LittleBeatPos = littleBeatPos;
         i_sound_track = sound_track;
         e_Type = type;
     }
 
-    public Note(int beatPos, int littlePos,int sound_track, string type)
+    public Note(int littleBeatPos,int sound_track, string type)
     {
-        i_BeatPos = beatPos;
-        i_LittlePos = littlePos;
+        i_LittleBeatPos = littleBeatPos;
         i_sound_track = sound_track;
         c_Type = type;
     }
 
-    public int i_BeatPos;
-    public int i_LittlePos;
+    // 
+    public int i_LittleBeatPos;
     public int  i_sound_track;
     public BeatType e_Type;
 
@@ -373,7 +366,6 @@ public class NoteType
         I_Id = id;
         S_TypeName = typename;
         NoteColor = Color.white;
-        t2_beatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
     }
 
     public NoteType(int id, string typename, Color color)
@@ -381,27 +373,22 @@ public class NoteType
         I_Id = id;
         S_TypeName = typename;
         NoteColor = color;
-        t2_beatBtn = Resources.Load<Texture2D>("Texture/Editor/BeatBtn-gray");
     }
     public static string Invalid = "Invalid";
     public int I_Id;
     public string S_TypeName;
     public Color NoteColor;
-    public static Texture2D t2_beatBtn;
 }
 
 public class DefaultNoteType
 {
     public List<NoteType> l_defaultTypes;
-
     public DefaultNoteType()
     {
         Debug.Log("BaseClass: DefaultNoteType");
         l_defaultTypes = new List<NoteType>();
-        l_defaultTypes.Add(new NoteType(0, NoteType.Invalid));
+        l_defaultTypes.Add(new NoteType(0, "Noodle"));
         l_defaultTypes.Add(new NoteType(1, "Single"));
-        //l_defaultTypes.Add(new NoteType(2, "Double"));
-        //l_defaultTypes.Add(new NoteType(3, "Trible")); 
     }
 
 }
