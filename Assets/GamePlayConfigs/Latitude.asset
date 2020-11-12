@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac4ab32227d6d7458eaf9e0f73a60a7, type: 3}
+  m_Name: Latitude
+  m_EditorClassIdentifier: 
+  l_Notes: []
+  I_BeatPerMinute: 0
+  I_BeatOffset: 0
+  F_BeatStartOffset: 0
+  I_LittleBeats: 2
+  AC_ClipToPlay: {fileID: 0}
+  I_SoundTracks: 0

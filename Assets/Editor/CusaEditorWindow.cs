@@ -12,6 +12,7 @@ using System;
 using UnityEditorInternal;
 using Object = UnityEngine.Object;
 using NUnit.Framework;
+using JetBrains.Annotations;
 
 public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 {
@@ -347,7 +348,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         i_pauseSample = 0;
         i_curSelectPos = -1;
         EditorApplication.update += Update;
-        justForDebug.on = true;
     }
 
     private void OnDisable()
@@ -475,8 +475,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(15);
 
         NoteSettingRect = EditorGUILayout.BeginVertical(GUILayout.MaxWidth(150));
-        //GUI.color = Color.white;
-        //GUI.Box(NoteSettingRect, "");
+        GUI.color = Color.white;
+        GUI.Box(NoteSettingRect, "");
         GUILayout.BeginHorizontal();
         GUILayout.Label("song name", GUILayout.Width(75));
         GUILayout.FlexibleSpace();
@@ -500,6 +500,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         EditorGUILayout.Space(15);
         EditorGUILayout.EndHorizontal();
+
+        if(EditorGUIUtility.editingTextField == false)
+        {
+            GUI.FocusControl(null);
+        }
     }
     void DrawSongControl()
     {
@@ -791,7 +796,6 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         b_pause = false;
         i_pauseSample = 0;
         EAudio.PlayClip();
-        SetSongPos(beats.F_BeatStartOffset);
     }
 
     void stop()
@@ -851,13 +855,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         {
             if (MainViewRect.Contains(v2_mousePos) || SliderRect.Contains(v2_mousePos))
             {
+                float current_time_fixed = f_curTime + (f_littleBeatEach - (f_curTime - beats.F_BeatStartOffset) % f_littleBeatEach);
+
                 if (Event.current.delta.y > 0)
                 {
-                    SetSongPos(f_curTime - f_littleBeatEach);
+                    SetSongPos(current_time_fixed - f_littleBeatEach);
                 }
                 else if (Event.current.delta.y < 0 )
                 {
-                    SetSongPos(f_curTime + f_littleBeatEach);
+                    SetSongPos(current_time_fixed + f_littleBeatEach);
                 }
 
             }
@@ -867,15 +873,16 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         {
             if (Event.current.button == 0)
             {
+                float current_time_fixed = f_curTime + (f_littleBeatEach - (f_curTime - beats.F_BeatStartOffset) % f_littleBeatEach);
                 if (MainViewRect.Contains(v2_mousePos) || SliderRect.Contains(v2_mousePos))
                 {
                     if (Event.current.delta.x > 0)
                     {
-                        SetSongPos(f_curTime - f_littleBeatEach);
+                        SetSongPos(current_time_fixed - f_littleBeatEach);
                     }
                     else if (Event.current.delta.x < 0)
                     {
-                        SetSongPos(f_curTime + f_littleBeatEach);
+                        SetSongPos(current_time_fixed + f_littleBeatEach);
                     }
                 }
 
@@ -952,7 +959,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         float f_time = f_curTime;
         // Pos以小节为单位
         int i_startPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
-
+ 
         float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : 0;
         for (int j = 0; j < I_SoundTracks; j++)
         {
@@ -960,12 +967,16 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             GUI.color = lineColor;
             float up = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) - I_ViewLineHeight / 2;
             float down = (totalRect.yMin + (totalRect.height / (I_SoundTracks + 1)) * (j + 1) - 2f) + I_ViewLineHeight / 2;
-            Rect lineRect = new Rect(totalRect.xMin, up, totalRect.width, 2f);
-            GUI.Box(lineRect, t2_LineTex);
-            lineRect = new Rect(totalRect.xMin, down, totalRect.width, 2f);
-            GUI.Box(lineRect, t2_LineTex);
+
+            Rect lineRectUp = new Rect(totalRect.xMin, up, totalRect.width, 2f);
+            GUI.Box(lineRectUp, t2_LineTex);
+
+            Rect lineRectDown = new Rect(totalRect.xMin, down, totalRect.width, 2f);
+            GUI.Box(lineRectDown, t2_LineTex);
+
             int soundtrack = j + 1;
             //GUI.Box(lineRect, t2_LineTex);
+            Rect lineRect = lineRectDown;
 
 #if (UseLittleBeat)
 
@@ -983,7 +994,16 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 // TODO 8.2 
                 if (i_curPos % little_beats == 0)
                 {
-                    //画长画粗                   
+                    //画数字
+                    if(j == 0)
+                    {
+                        int i_beatPos = (i_curPos / little_beats) + 1;
+                        float posX = lineRectUp.xMin + I_BeatCheckLine + (i - f_timeParam) * f_viewIntervalWidth + little_beats * f_viewIntervalWidth / 2;
+                        float posY = lineRectUp.yMin - 23;
+                        tempRect = new Rect(posX, posY, 20, 20);
+                        GUI.Label(tempRect, i_beatPos.ToString());
+                    }
+                    //画长画粗 
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
                         I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
@@ -1310,6 +1330,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         beatjsonObj.bpm = beats.I_BeatPerMinute;
         beatjsonObj.offset = beats.F_BeatStartOffset;
         beatjsonObj.sound_tracks = beats.I_SoundTracks;
+        beatjsonObj.little_beats = beats.I_LittleBeats;
         beatjsonObj.nodes = new List<BeatNotesJson.NoteJson>();
 
         List<Note> nodes = beats.GetNotes();
