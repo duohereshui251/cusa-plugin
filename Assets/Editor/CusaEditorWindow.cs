@@ -1055,8 +1055,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         var note = beats.GetNoteByPos(i_curPos);
 
                         if (note.isEnd == true)
-                        {
-                      
+                        {                     
                             float img_width = (note.i_EndPos - note.i_StartPos) * f_viewIntervalWidth;
                             Rect tempNoodleRect = new Rect(tempRect.xMin, tempRect.yMin, img_width, tempRect.height);
                             GUI.DrawTexture(tempNoodleRect, t2_Noodle_in);

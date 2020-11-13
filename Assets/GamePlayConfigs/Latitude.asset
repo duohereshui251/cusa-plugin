@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ac4ab32227d6d7458eaf9e0f73a60a7, type: 3}
   m_Name: Latitude
   m_EditorClassIdentifier: 
-  l_Notes: []
-  I_BeatPerMinute: 0
+  l_Notes:
+  - i_LittleBeatPos: 9
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 4
+    i_EndPos: 9
+    c_Type: Noodle
+  I_BeatPerMinute: 180
   I_BeatOffset: 0
   F_BeatStartOffset: 0
-  I_LittleBeats: 2
-  AC_ClipToPlay: {fileID: 0}
-  I_SoundTracks: 0
+  I_LittleBeats: 4
+  AC_ClipToPlay: {fileID: 8300000, guid: 3de150bdd965aa74d95225b8cd1b887e, type: 3}
+  I_SoundTracks: 4
