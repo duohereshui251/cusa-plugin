@@ -143,6 +143,39 @@ public class BeatNotes : ScriptableObject
         }
 
     }
+
+    public void SetNoodle(int littleBeatPos, int sound_track, int startPos, int endPos, bool isEnd)
+    {
+        if (startPos < 0 || endPos < 0)
+        {
+            return;
+        }
+        tempNote = GetNoteByPos(littleBeatPos);
+
+        if (tempNote != null)
+        {
+            int index = l_Notes.IndexOf(tempNote);
+            Note n = new Note(littleBeatPos, sound_track, NoteType.Noodle, startPos, endPos);
+            n.isEnd = isEnd;
+            l_Notes[index] = n;
+        }
+        else
+        {
+            for (int i = 0; i < l_Notes.Count; i++)
+            {
+                if (l_Notes[i].i_LittleBeatPos > littleBeatPos)
+                {
+                    Note nn = new Note(littleBeatPos, sound_track, NoteType.Noodle, startPos, endPos);
+                    nn.isEnd = isEnd;
+                    l_Notes.Insert(i, nn);
+                    return;
+                }
+            }
+            Note n = new Note(littleBeatPos, sound_track, NoteType.Noodle, startPos, endPos);
+            l_Notes.Add(n);
+        }
+
+    }
     public void AdjustNote(int littleBeatPos, BeatType type)
     {
 
@@ -357,6 +390,9 @@ public class Note
         i_LittleBeatPos = littleBeatPos;
         i_sound_track = sound_track;
         e_Type = type;
+        i_StartPos = littleBeatPos;
+        i_EndPos = littleBeatPos;
+        
     }
 
     public Note(int littleBeatPos,int sound_track, string type)
@@ -364,16 +400,37 @@ public class Note
         i_LittleBeatPos = littleBeatPos;
         i_sound_track = sound_track;
         c_Type = type;
+        i_StartPos = littleBeatPos;
+        i_EndPos = littleBeatPos;
+    }
+    public Note(int littleBeatPos, int sound_track, string type, int startPos, int endPos)
+    {
+        i_LittleBeatPos = littleBeatPos;
+        i_sound_track = sound_track;
+        c_Type = type;
+        i_StartPos = startPos;
+        i_EndPos = endPos;
     }
 
-    // 
     public int i_LittleBeatPos;
     public int  i_sound_track;
     public BeatType e_Type;
+    /// <summary>
+    /// Noodle 开头
+    /// </summary>
+    public int i_StartPos;
+    /// <summary>
+    /// Noodle 结尾
+    /// </summary>
+    public int i_EndPos;
+    /// <summary>
+    /// Noodle设置是否结束
+    /// </summary>
+    [NonSerialized]
+    public bool isEnd = false;
 
     // TODO1: new feature -- NoteType Edit
     public  string c_Type; // 用户自定义节奏点类型
-
 }
 
 
@@ -392,7 +449,14 @@ public class NoteType
         S_TypeName = typename;
         NoteColor = color;
     }
+
+    public string GetName()
+    {
+        return S_TypeName;
+    }
     public static string Invalid = "Invalid";
+    public static string Noodle = "Noodle";
+    public static string Single = "Single";
     public int I_Id;
     public string S_TypeName;
     public Color NoteColor;
@@ -405,8 +469,8 @@ public class DefaultNoteType
     {
         Debug.Log("BaseClass: DefaultNoteType");
         l_defaultTypes = new List<NoteType>();
-        l_defaultTypes.Add(new NoteType(0, "Noodle"));
-        l_defaultTypes.Add(new NoteType(1, "Single"));
+        l_defaultTypes.Add(new NoteType(0, NoteType.Noodle));
+        l_defaultTypes.Add(new NoteType(1, NoteType.Single));
     }
 
 }

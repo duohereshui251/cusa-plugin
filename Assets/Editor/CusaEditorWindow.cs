@@ -63,7 +63,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// <summary>
     /// 判定线位置， ，默认50
     /// </summary>
-    int I_BeatCheckLine;  
+    int I_BeatCheckLine;
     BeatType e_CurNoteType;
     int I_buttonWidth;
     int I_SoundTracks;
@@ -109,8 +109,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     /// note
     /// </summary>
     Texture2D t2_Note;
-
+    Texture2D t2_Noodle_in;
+    Texture2D t2_Noodle_out;
     Texture2D t2_LineTex;
+
 
     // 歌曲控制信息
 
@@ -123,6 +125,14 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     float f_beatEach;
     float f_littleBeatEach;
     int i_curSelectPos;
+    /// <summary>
+    /// 面条起点
+    /// </summary>
+    int NoodleStartPos;
+    /// <summary>
+    /// 面条终点
+    /// </summary>
+    int NoodleEndPos;
 
     //float f_beatToScale;
     //float f_beatCheck;
@@ -140,7 +150,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // 布局数值信息
     float leftViewWidth;
     float rightViewWidth;
-   
+
     /// <summary>
     /// 预览长度, 不会随着窗口的改变而变长，而会随着鼠标滚轮放大缩小变长
     /// </summary>
@@ -150,6 +160,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // 鼠标位置信息
     Vector2 v2_mousePos = Vector2.zero;
     bool b_isLeftClick = false;
+    bool b_NoodleStart = false;
+    int i_NoodleStartPos = -1;
+    int i_NoodleEndPos = -1;
 
     Rect tempRect;
     // 保存各个组件的Rect信息
@@ -326,7 +339,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         blocks = (int)f_sliderDisplayWidth / I_sliderBlockWidth;
         PerBlockBeats = (i_totalLittleBeats / (blocks - 1)) + 1;
-        Debug.LogFormat("[CusaEditorWindow.InitData] blocks: {0}, PerBlockBeats: {1}", blocks , PerBlockBeats);
+        Debug.LogFormat("[CusaEditorWindow.InitData] blocks: {0}, PerBlockBeats: {1}", blocks, PerBlockBeats);
         if (I_SoundTracks > 0)
         {
             f_soundTracksWidth = (win_height - f_SliderHeight) / I_SoundTracks;
@@ -340,6 +353,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         t2_Thickline = Resources.Load<Texture2D>("Texture/Editor/thick_line");
         t2_Thinline = Resources.Load<Texture2D>("Texture/Editor/thin_line_blue");
         t2_Note = Resources.Load<Texture2D>("Texture/Editor/note");
+        t2_Noodle_in = Resources.Load<Texture2D>("Texture/Editor/noodle2");
+        t2_Noodle_out = Resources.Load<Texture2D>("Texture/Editor/noodle1");
 
         if (t2_Thickline == null)
             Debug.LogError("[CusaEditorWindow.OnEnable] button load failed.");
@@ -402,7 +417,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     {
         // 高度指定必须是position.height， 如果是MainRect.height， 高度则不会改变
         LeftRect = EditorGUILayout.BeginVertical(GUILayout.Width(leftViewWidth), GUILayout.Height(position.height));
-        
+
         Rect sidelineRect = new Rect(tempRect.xMax - 1, tempRect.yMin, 1, tempRect.height);
         GUI.color = Color.gray;
         GUI.Box(sidelineRect, t2_LineTex);
@@ -501,7 +516,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(15);
         EditorGUILayout.EndHorizontal();
 
-        if(EditorGUIUtility.editingTextField == false)
+        if (EditorGUIUtility.editingTextField == false)
         {
             GUI.FocusControl(null);
         }
@@ -765,7 +780,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         int CurPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
         Debug.LogFormat("[CusaEditor.AddNotePressKey] Add note to CurPos {0}", CurPos);
         // TODO12
-        beats.SetNote(CurPos,1, S_SelectedNoteTypeName);
+        beats.SetNote(CurPos, 1, S_SelectedNoteTypeName);
     }
 
     /// <summary>
@@ -836,7 +851,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             {
                 PlayPressKey();
             }
-            if(Event.current.keyCode == (KeyCode.Return))
+            if (Event.current.keyCode == (KeyCode.Return))
             {
                 AddNotePressKey();
             }
@@ -861,7 +876,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 {
                     SetSongPos(current_time_fixed - f_littleBeatEach);
                 }
-                else if (Event.current.delta.y < 0 )
+                else if (Event.current.delta.y < 0)
                 {
                     SetSongPos(current_time_fixed + f_littleBeatEach);
                 }
@@ -959,7 +974,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         float f_time = f_curTime;
         // Pos以小节为单位
         int i_startPos = Mathf.FloorToInt(f_time / f_littleBeatEach);
- 
+
         float f_timeParam = f_time >= 0 ? (f_time % f_littleBeatEach) / f_littleBeatEach : 0;
         for (int j = 0; j < I_SoundTracks; j++)
         {
@@ -991,11 +1006,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     clickable = false;
                 }
                 #region DrawNotes
-                // TODO 8.2 
+
                 if (i_curPos % little_beats == 0)
                 {
                     //画数字
-                    if(j == 0)
+                    if (j == 0)
                     {
                         int i_beatPos = (i_curPos / little_beats) + 1;
                         float posX = lineRectUp.xMin + I_BeatCheckLine + (i - f_timeParam) * f_viewIntervalWidth + little_beats * f_viewIntervalWidth / 2;
@@ -1004,15 +1019,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                         GUI.Label(tempRect, i_beatPos.ToString());
                     }
                     //画长画粗 
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth - 0.1f,
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + (i - f_timeParam) * f_viewIntervalWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
                         I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
-                    
-                    GUI.DrawTexture(tempRect, t2_Thickline);                   
+
+                    GUI.DrawTexture(tempRect, t2_Thickline);
                 }
                 else
                 {
-                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine +(i - f_timeParam) * f_viewIntervalWidth,
+                    tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + (i - f_timeParam) * f_viewIntervalWidth,
                         lineRect.yMax - 2f - I_ViewLineHeight,
                         I_ViewLineWidth, I_ViewLineHeight);
                     GUI.DrawTexture(tempRect, t2_Thinline);
@@ -1030,20 +1045,46 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 if (!clickable)
                     GUI.color = Color.black;
 
-                // TODO8                
+                // 画note
                 if (nType != NoteType.Invalid)
                 {
-                    //TODO8: 画note
-                    GUI.color = beats.GetTypeColor(nType);
-                    Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, f_viewNoteWidth, tempRect.height);
-                    GUI.DrawTexture(tempNoteRect, t2_Note);
+                    if (nType == NoteType.Noodle)
+                    {
+                        // 画面条
+                        // 区分出设置一半的和设置完成的
+                        var note = beats.GetNoteByPos(i_curPos);
+
+                        if (note.isEnd == true)
+                        {
+                      
+                            float img_width = (note.i_EndPos - note.i_StartPos) * f_viewIntervalWidth;
+                            Rect tempNoodleRect = new Rect(tempRect.xMin, tempRect.yMin, img_width, tempRect.height);
+                            GUI.DrawTexture(tempNoodleRect, t2_Noodle_in);
+
+                        }
+                        else if(note.i_EndPos == note.i_StartPos)
+                        { 
+                            // 只画了一半的情况                           
+                            GUI.color = Color.yellow;
+                            Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, f_viewNoteWidth, tempRect.height);
+                            GUI.DrawTexture(tempNoteRect, t2_Note);
+                        }
+
+                    }
+                    else
+                    {
+                        GUI.color = beats.GetTypeColor(nType);
+                        Rect tempNoteRect = new Rect(tempRect.xMin + tempRect.width, tempRect.yMin, f_viewNoteWidth, tempRect.height);
+                        GUI.DrawTexture(tempNoteRect, t2_Note);
+                    }
+
                 }
                 GUI.color = Color.white;
                 #endregion
 
                 #region mouseClick
 
-                Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + f_viewIntervalWidth-5, tempRect.height );
+                Rect noteIntervalRect = new Rect(tempRect.xMin, tempRect.yMin, tempRect.width + f_viewIntervalWidth - 5, tempRect.height);
 
                 if (clickable && v2_mousePos != Vector2.zero && noteIntervalRect.Contains(v2_mousePos))
                 {
@@ -1053,12 +1094,48 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     }
                     if (b_isLeftClick)
                     {
+
                         if (beats.GetNoteByPos(i_curPos) == null || i_curSelectPos == i_curPos)
                         {
-
                             Debug.LogFormat("[CusaEditor.DrawView] clicked node's type will be {0}", S_SelectedNoteTypeName);
-                            // TODO8
-                            beats.SetNote(i_curPos, soundtrack, S_SelectedNoteTypeName);
+
+                            if (S_SelectedNoteTypeName == NoteType.Noodle)
+                            {
+                                if (!b_NoodleStart)
+                                {
+                                    b_NoodleStart = true;
+                                    i_NoodleStartPos = i_curPos;
+                                    beats.SetNoodle(i_curPos, soundtrack, i_NoodleStartPos, i_NoodleStartPos, false);
+                                }
+                                else
+                                {
+
+                                    i_NoodleEndPos = i_curPos;
+                                    var StartNote = beats.GetNoteByPos(i_NoodleStartPos);
+                                    StartNote.i_EndPos = i_NoodleEndPos;
+                                    StartNote.isEnd = true;
+                                    for (int ii = i_NoodleStartPos + 1; ii <= i_NoodleEndPos; ii++)
+                                    {
+                                        beats.SetNoodle(ii, soundtrack, i_NoodleStartPos, i_NoodleEndPos, true);
+                                    }
+
+
+                                    // 打印面条信息
+                                    for (int ii = i_NoodleStartPos; ii <= i_NoodleEndPos; ii++)
+                                    {
+                                        var nnn = beats.GetNoteByPos(ii);
+                                        Debug.LogFormat("[Print Noodles] note[{0}] startPos: {1}, endPos: {2}, isEnd: {3}", nnn.i_LittleBeatPos, nnn.i_StartPos, nnn.i_EndPos, nnn.isEnd);
+                                    }
+                                    i_NoodleStartPos = -1;
+                                    i_NoodleEndPos = -1;
+                                    b_NoodleStart = false;
+
+                                }
+                            }
+                            else
+                            {
+                                beats.SetNote(i_curPos, soundtrack, S_SelectedNoteTypeName);
+                            }
 
                         }
                         i_curSelectPos = i_curPos;
@@ -1192,7 +1269,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             Note tempNote = beats.GetNoteByPos(i_curSelectPos);
             if (tempNote == null)
             {
-                Debug.LogError("[CusaEditorWindow.DrawViewExtra] selected Note doesn't exist.");
+                //Debug.LogError("[CusaEditorWindow.DrawViewExtra] selected Note doesn't exist.");
                 return;
             }
 
@@ -1229,7 +1306,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         SliderBarRect = new Rect(SliderRect.xMin, SliderRect.yMax - 10, f_sliderDisplayWidth, 20);
 
         curPos = GUI.HorizontalSlider(SliderBarRect, curPos, 0, 1);
-        
+
         SliderLineRect = new Rect(SliderBarRect.xMin + f_sliderDisplayWidth * curPos, SliderRect.yMin, 1, SliderRect.height);
         GUI.DrawTexture(SliderLineRect, t2_LineTex);
         if (oldPos != curPos)
@@ -1247,7 +1324,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         GUI.Box(totalRect, "");
 
         PerTrackHeight = (totalRect.height - 3 * I_SoundTracks) / I_SoundTracks;
-        for(int i = 1;i <= I_SoundTracks - 1; ++i)
+        for (int i = 1; i <= I_SoundTracks - 1; ++i)
         {
             Rect templineRect = new Rect(totalRect.xMin, totalRect.yMin + i * (PerTrackHeight + 3) - 3, f_sliderDisplayWidth, 3);
             GUI.color = lineColor;
@@ -1256,13 +1333,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         float startX = totalRect.xMin;
         float endY = totalRect.yMin;
 
-        for(int i = 0; i < I_SoundTracks; ++i)
+        for (int i = 0; i < I_SoundTracks; ++i)
         {
             startX = totalRect.xMin;
             endY = totalRect.yMin + (i + 1) * (PerTrackHeight + 3) - 3;
             for (int j = 0; j < blocks; ++j)
             {
-                int blockNotes = beats.GetPerBlockNotes(j, PerBlockBeats, i+1);
+                int blockNotes = beats.GetPerBlockNotes(j, PerBlockBeats, i + 1);
                 // 计算block note数量的函数
                 //float blockHeight = PerTrackHeight;
                 float blockHeight = PerTrackHeight * blockNotes / PerBlockBeats;
@@ -1271,7 +1348,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     Debug.LogFormat("[BeatNodes.GetPerBlockNotes] track: {0}, blockNotes: {1}, blockHeight: {2}", i + 1, blockNotes, blockHeight);
                     justForDebug.on = false;
                 }
-                Rect tempBlock = new Rect(startX + j * I_sliderBlockWidth, endY - blockHeight , I_sliderBlockWidth - 1, blockHeight);
+                Rect tempBlock = new Rect(startX + j * I_sliderBlockWidth, endY - blockHeight, I_sliderBlockWidth - 1, blockHeight);
                 GUI.color = Color.red;
                 GUI.DrawTexture(tempBlock, t2_LineTex);
             }
@@ -1336,8 +1413,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         List<Note> nodes = beats.GetNotes();
         for (int i = 0; i < nodes.Count; ++i)
         {
-
-            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].e_Type));
+            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].e_Type, nodes[i].i_StartPos, nodes[i].i_EndPos));
         }
         string jsonstr = JsonUtility.ToJson(beatjsonObj, true);
         Debug.Log(jsonstr);
