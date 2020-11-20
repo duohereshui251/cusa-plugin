@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Security.Permissions;
 using UnityEngine;
 
+
 public class justForDebug
 {
     static public bool on = true;
@@ -78,6 +79,15 @@ public class BeatNotes : ScriptableObject
             
         });
     }
+
+    public void SetTrackRandom()
+    {
+        System.Random rnd = new System.Random();
+        foreach (var n in l_Notes)
+        {
+            n.i_sound_track = rnd.Next(1, I_SoundTracks+1);
+        }
+    }
     public int GetPerBlockNotes(int blockIndex, int perBlockBeats, int trackIndex)
     {
         int res = 0;
@@ -144,7 +154,7 @@ public class BeatNotes : ScriptableObject
 
     }
 
-    public void SetNoodle(int littleBeatPos, int sound_track, int startPos, int endPos, bool isEnd)
+    public void SetNoodle(int littleBeatPos, int sound_track, int startPos, int endPos, bool isStart, bool isEnd)
     {
         if (startPos < 0 || endPos < 0)
         {
@@ -156,6 +166,7 @@ public class BeatNotes : ScriptableObject
         {
             int index = l_Notes.IndexOf(tempNote);
             Note n = new Note(littleBeatPos, sound_track, NoteType.Noodle, startPos, endPos);
+            n.isStart = isStart;
             n.isEnd = isEnd;
             l_Notes[index] = n;
         }
@@ -166,6 +177,7 @@ public class BeatNotes : ScriptableObject
                 if (l_Notes[i].i_LittleBeatPos > littleBeatPos)
                 {
                     Note nn = new Note(littleBeatPos, sound_track, NoteType.Noodle, startPos, endPos);
+                    nn.isStart = isStart;
                     nn.isEnd = isEnd;
                     l_Notes.Insert(i, nn);
                     return;
@@ -385,6 +397,29 @@ public class BeatNotes : ScriptableObject
 [System.Serializable]
 public class Note
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public int i_LittleBeatPos;
+    public int i_sound_track;
+    public BeatType e_Type;
+    /// <summary>
+    /// Noodle 开头
+    /// </summary>
+    public int i_StartPos;
+    /// <summary>
+    /// Noodle 结尾
+    /// </summary>
+    public int i_EndPos;
+    /// <summary>
+    /// Noodle设置是否结束
+    /// </summary>
+    [NonSerialized]
+    public bool isEnd = false;
+    [NonSerialized]
+    public bool isStart = false;
+    // TODO1: new feature -- NoteType Edit
+    public string c_Type; // 用户自定义节奏点类型
     public Note(int littleBeatPos, int sound_track, BeatType type)
     {
         i_LittleBeatPos = littleBeatPos;
@@ -411,26 +446,6 @@ public class Note
         i_StartPos = startPos;
         i_EndPos = endPos;
     }
-
-    public int i_LittleBeatPos;
-    public int  i_sound_track;
-    public BeatType e_Type;
-    /// <summary>
-    /// Noodle 开头
-    /// </summary>
-    public int i_StartPos;
-    /// <summary>
-    /// Noodle 结尾
-    /// </summary>
-    public int i_EndPos;
-    /// <summary>
-    /// Noodle设置是否结束
-    /// </summary>
-    [NonSerialized]
-    public bool isEnd = false;
-
-    // TODO1: new feature -- NoteType Edit
-    public  string c_Type; // 用户自定义节奏点类型
 }
 
 
