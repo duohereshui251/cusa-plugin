@@ -29,6 +29,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     string PauseButton = "Pause";
     string ReplayButton = "Resume";
     string SaveButton = "Save Data";
+    string LoadButton = "Load Data";
     string ClearButton = "Clear";
 
     // MainView & upsidebar data
@@ -469,9 +470,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         DrawSongControl(); // draw 1
         EditorGUILayout.Space(15);
-        DrawSaveAndClearButton();
+        NoteOperate();
         EditorGUILayout.Space(15);
-
+        Fileserialization();
         EditorGUILayout.Space(15);
 
         EditorGUILayout.EndVertical();
@@ -936,27 +937,20 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         //f_beatCheck = 0;
 
     }
-    void DrawSaveAndClearButton()
+    void NoteOperate()
     {
-        f_curTime = EAudio.GetCurTime();
-
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space(15);
 
         Rect t = EditorGUILayout.BeginHorizontal();
         //GUI.color = viewColor;
         //GUI.Box(t, "");
-        if (GUILayout.Button(SaveButton/*, GUILayout.Width(I_buttonWidth)*/))
-        {
-            SaveToJson();
-        }
-
-        GUILayout.FlexibleSpace();
-
+     
         if (GUILayout.Button(ClearButton/*, GUILayout.Width(I_buttonWidth)*/))
         {
             Clear();
         }
+        GUILayout.FlexibleSpace();
         if (GUILayout.Button("note随机分配"))
         {
             SetTrackRandom();
@@ -967,6 +961,31 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.EndHorizontal();
 
     }
+
+    void Fileserialization()
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.Space(15);
+
+        Rect t = EditorGUILayout.BeginHorizontal();
+
+        if (GUILayout.Button(SaveButton/*, GUILayout.Width(I_buttonWidth)*/))
+        {
+            SaveToJson();
+        }
+
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button(LoadButton/*, GUILayout.Width(I_buttonWidth)*/))
+        {
+            LoadFromJson();
+        }
+
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space(15);
+        EditorGUILayout.EndHorizontal();
+
+    }
+
 
 
     void DrawRect(Rect MainRect)
@@ -1502,6 +1521,11 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
 #endif
+    }
+
+    void LoadFromJson()
+    {
+
     }
     void Clear()
     {
