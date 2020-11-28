@@ -14,13 +14,13 @@ public class BeatNotesJson
     public float offset;
     public int little_beats;
     public int sound_tracks;
-    
+    public List<NoteTypeJson> nodeTypes;
     public List<NoteJson> nodes;
 
     [Serializable]
     public class NoteJson
     {
-        public NoteJson(int id,int littlePos, int sound_track, BeatType type, int startPos, int endPos)
+        public NoteJson(int id,int littlePos, int sound_track, string type, int startPos, int endPos)
         {
             this.ID = id;
             this.littleBeatPos = littlePos;
@@ -34,6 +34,19 @@ public class BeatNotesJson
         public int startPos;
         public int endPos;
         public int sound_track;
-        public BeatType nodeType;
+        public string nodeType;
     }
+
+    [Serializable]
+    public class NoteTypeJson
+    {
+        public NoteTypeJson(int id, string typename)
+        {
+            ID = id;
+            TypeName = typename;
+        }
+        public int ID;
+        public string TypeName;
+    }
+
 }

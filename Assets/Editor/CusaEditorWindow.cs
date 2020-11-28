@@ -114,9 +114,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     Texture2D t2_Noodle_out;
     Texture2D t2_LineTex;
 
+    // json
+    private TextAsset JsonFile;
 
     // 歌曲控制信息
-
     public BeatNotes beats;
     bool b_isLoadBeats;
     bool b_pause;
@@ -187,6 +188,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     // 歌曲信息
     private string totalTimeStr;
     private string curTimeStr;
+
 
     bool Editable
     {
@@ -279,7 +281,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             Debug.Log("[CusaEditorWindow.OnSelectionChange] change BeatNotes file");
             InitData(1180, 400);
         }
-        EditorCoroutineRunner.StartEditorCoroutine(CheckForResize());
+        //EditorCoroutineRunner.StartEditorCoroutine(CheckForResize());
 
     }
 
@@ -300,7 +302,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         }
         // init data
         beats.InitType();
-
+        JsonFile = beats.jsonFile;
         EAudio.AttachClipTo(beats.AC_ClipToPlay);
 
         f_totalTime = beats.AC_ClipToPlay.length;
@@ -422,8 +424,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         EditorGUILayout.EndHorizontal();
 
+        if (GUI.changed)
+        {
+            InitData(position.width, position.height);
+        }
 
         v2_mousePos = Vector2.zero;
+
     }
     void LeftView()
     {
@@ -521,6 +528,9 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         // TODO8
         little_beats_index = EditorGUILayout.Popup("节奏", little_beats_index, little_beats_options);
         beats.I_LittleBeats = little_beats_values[little_beats_index];
+        EditorGUILayout.Space(10);
+        JsonFile = (TextAsset)EditorGUILayout.ObjectField("load json file", JsonFile, typeof(TextAsset), true);
+
         EditorGUILayout.Space(10);
 
         EditorGUILayout.EndVertical();
@@ -945,13 +955,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         Rect t = EditorGUILayout.BeginHorizontal();
         //GUI.color = viewColor;
         //GUI.Box(t, "");
-     
-        if (GUILayout.Button(ClearButton/*, GUILayout.Width(I_buttonWidth)*/))
+
+        if (GUILayout.Button(ClearButton, GUILayout.Width(I_buttonWidth)))
         {
             Clear();
         }
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("note随机分配"))
+        if (GUILayout.Button("note 随机分配", GUILayout.Width(I_buttonWidth)))
         {
             SetTrackRandom();
         }
@@ -968,18 +978,10 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         EditorGUILayout.Space(15);
 
         Rect t = EditorGUILayout.BeginHorizontal();
-
-        if (GUILayout.Button(SaveButton/*, GUILayout.Width(I_buttonWidth)*/))
+        if (GUILayout.Button(SaveButton))
         {
             SaveToJson();
         }
-
-        GUILayout.FlexibleSpace();
-        if (GUILayout.Button(LoadButton/*, GUILayout.Width(I_buttonWidth)*/))
-        {
-            LoadFromJson();
-        }
-
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(15);
         EditorGUILayout.EndHorizontal();
@@ -1058,7 +1060,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
                     tempRect = new Rect(lineRect.xMin + I_BeatCheckLine + (i - f_timeOffset) * f_viewIntervalWidth - 0.1f,
                         lineRect.yMax - 2f - I_ViewLineHeight - 0.2f,
-                        I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);                    
+                        I_ViewLineWidth + 0.2f, I_ViewLineHeight + 0.2f);
                     GUI.DrawTexture(tempRect, t2_Thickline);
                 }
                 else
@@ -1138,7 +1140,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                     {
                         if (beats.GetNoteByPos(i_curPos) == null || i_curSelectPos == i_curPos)
                         {
-                            
+
                             #region Set noodle
                             if (S_SelectedNoteTypeName == NoteType.Noodle)
                             {
@@ -1147,7 +1149,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                                     b_NoodleStart = true;
                                     i_NoodleStartPos = i_curPos;
                                     beats.SetNoodle(i_curPos, soundtrack, i_NoodleStartPos, i_NoodleStartPos, true, false);
-                                   
+
                                 }
                                 else
                                 {
@@ -1159,13 +1161,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                                     StartNote.isEnd = true;
                                     for (int ii = i_NoodleStartPos + 1; ii <= i_NoodleEndPos; ii++)
                                     {
-                                        beats.SetNoodle(ii, soundtrack, i_NoodleStartPos, i_NoodleEndPos,false ,true);
+                                        beats.SetNoodle(ii, soundtrack, i_NoodleStartPos, i_NoodleEndPos, false, true);
                                     }
                                     // 打印面条信息
                                     for (int ii = i_NoodleStartPos; ii <= i_NoodleEndPos; ii++)
                                     {
                                         var nnn = beats.GetNoteByPos(ii);
-                                        Debug.LogFormat("[Noodle Debug] note[{0}] startPos: {1}, endPos: {2}, isStart: {3} ,isEnd: {4}", nnn.i_LittleBeatPos, nnn.i_StartPos, nnn.i_EndPos, nnn.isStart ,nnn.isEnd);
+                                        Debug.LogFormat("[Noodle Debug] note[{0}] startPos: {1}, endPos: {2}, isStart: {3} ,isEnd: {4}", nnn.i_LittleBeatPos, nnn.i_StartPos, nnn.i_EndPos, nnn.isStart, nnn.isEnd);
                                     }
                                     i_NoodleStartPos = -1;
                                     i_NoodleEndPos = -1;
@@ -1497,12 +1499,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         beatjsonObj.sound_tracks = beats.I_SoundTracks;
         beatjsonObj.little_beats = beats.I_LittleBeats;
         beatjsonObj.nodes = new List<BeatNotesJson.NoteJson>();
+        beatjsonObj.nodeTypes = new List<BeatNotesJson.NoteTypeJson>();
 
         List<Note> nodes = beats.GetNotes();
         for (int i = 0; i < nodes.Count; ++i)
         {
-            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].e_Type, nodes[i].i_StartPos, nodes[i].i_EndPos));
+            beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].c_Type, nodes[i].i_StartPos, nodes[i].i_EndPos));
         }
+        List<NoteType> types = beats.GetNoteTypes();
+        for(int i = 0;i < types.Count; ++i)
+        {
+            beatjsonObj.nodeTypes.Add(new BeatNotesJson.NoteTypeJson(types[i].I_Id, types[i].S_TypeName));
+        }
+        
         string jsonstr = JsonUtility.ToJson(beatjsonObj, true);
         Debug.Log(jsonstr);
 
@@ -1511,12 +1520,19 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         path = "Assets/Resources/GameJSONData/MusicInfo.json";
 #endif
 
-        using (FileStream fs = new FileStream(path, FileMode.Create))
+        //using (FileStream fs = new FileStream(path, FileMode.Create))
+        //{
+        //    using (StreamWriter writer = new StreamWriter(fs))
+        //    {
+        //        writer.Write(jsonstr);
+        //    }
+        //}
+
+        if (JsonFile)
         {
-            using (StreamWriter writer = new StreamWriter(fs))
-            {
-                writer.Write(jsonstr);
-            }
+            File.WriteAllText(AssetDatabase.GetAssetPath(JsonFile), jsonstr);
+            beats.jsonFile = JsonFile;
+            EditorUtility.SetDirty(JsonFile);
         }
 #if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();

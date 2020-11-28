@@ -32,6 +32,7 @@ public class BeatNotes : ScriptableObject
     public float F_BeatStartOffset;
     public int I_LittleBeats = 2;
     public AudioClip AC_ClipToPlay;
+    public TextAsset jsonFile;
     public int I_SoundTracks;
     public string S_SongName { get; set; }
     #region Interact APIs
@@ -64,6 +65,10 @@ public class BeatNotes : ScriptableObject
     public List<Note> GetNotes()
     {
         return l_Notes;
+    }
+    public List<NoteType> GetNoteTypes()
+    {
+        return c_NoteTypes.GetTypeList();
     }
     public void ForceSort()
     {
@@ -500,6 +505,12 @@ public class CustomNoteType: DefaultNoteType
     {
         Debug.Log("DerivedClass: CustomNoteType");
         l_customTypes = new List<NoteType>();
+    }
+    public List<NoteType> GetTypeList()
+    {
+        var templist = base.l_defaultTypes;
+        templist.AddRange(l_customTypes);
+        return templist;
     }
     public NoteType GetTypeByName(string typename)
     {
