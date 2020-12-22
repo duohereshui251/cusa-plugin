@@ -1,0 +1,28 @@
+{
+    "song_name": "111",
+    "path": "xxx_path",
+    "bpm": 128,
+    "offset": 0.0,
+    "little_beats": 4,
+    "sound_tracks": 4,
+    "nodeTypes": [
+        {
+            "ID": 0,
+            "TypeName": "Noodle"
+        },
+        {
+            "ID": 1,
+            "TypeName": "Single"
+        }
+    ],
+    "nodes": [
+        {
+            "ID": 0,
+            "littleBeatPos": 0,
+            "startPos": 0,
+            "endPos": 0,
+            "sound_track": 1,
+            "nodeType": ""
+        }
+    ]
+}
