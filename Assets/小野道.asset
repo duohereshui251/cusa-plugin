@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac4ab32227d6d7458eaf9e0f73a60a7, type: 3}
+  m_Name: "\u5C0F\u91CE\u9053"
+  m_EditorClassIdentifier: 
+  l_Notes:
+  - i_LittleBeatPos: 1
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 2
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 3
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 4
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 5
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 6
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 7
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 8
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 1
+    i_EndPos: 8
+    c_Type: Noodle
+  - i_LittleBeatPos: 32
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 32
+    i_EndPos: 32
+    c_Type: Noodle
+  - i_LittleBeatPos: 41
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 41
+    i_EndPos: 41
+    c_Type: Noodle
+  - i_LittleBeatPos: 46
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 46
+    i_EndPos: 46
+    c_Type: Noodle
+  - i_LittleBeatPos: 51
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 51
+    i_EndPos: 51
+    c_Type: Noodle
+  - i_LittleBeatPos: 55
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 55
+    i_EndPos: 55
+    c_Type: Noodle
+  - i_LittleBeatPos: 60
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 60
+    i_EndPos: 60
+    c_Type: Noodle
+  - i_LittleBeatPos: 65
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 65
+    i_EndPos: 65
+    c_Type: Noodle
+  - i_LittleBeatPos: 110
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 110
+    i_EndPos: 110
+    c_Type: Single
+  - i_LittleBeatPos: 114
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 114
+    i_EndPos: 114
+    c_Type: Single
+  - i_LittleBeatPos: 118
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 118
+    i_EndPos: 118
+    c_Type: Single
+  - i_LittleBeatPos: 121
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 121
+    i_EndPos: 121
+    c_Type: Single
+  - i_LittleBeatPos: 125
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 125
+    i_EndPos: 125
+    c_Type: Single
+  - i_LittleBeatPos: 128
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 128
+    i_EndPos: 128
+    c_Type: Single
+  - i_LittleBeatPos: 132
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 132
+    i_EndPos: 132
+    c_Type: Single
+  - i_LittleBeatPos: 134
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 134
+    i_EndPos: 134
+    c_Type: Single
+  - i_LittleBeatPos: 137
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 137
+    i_EndPos: 137
+    c_Type: Single
+  - i_LittleBeatPos: 140
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 140
+    i_EndPos: 140
+    c_Type: Single
+  - i_LittleBeatPos: 143
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 143
+    i_EndPos: 143
+    c_Type: Single
+  - i_LittleBeatPos: 146
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 146
+    i_EndPos: 146
+    c_Type: Single
+  - i_LittleBeatPos: 149
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 149
+    i_EndPos: 149
+    c_Type: Single
+  - i_LittleBeatPos: 152
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 152
+    i_EndPos: 152
+    c_Type: Single
+  - i_LittleBeatPos: 154
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 154
+    i_EndPos: 154
+    c_Type: Single
+  - i_LittleBeatPos: 157
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 157
+    i_EndPos: 157
+    c_Type: Single
+  - i_LittleBeatPos: 159
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 159
+    i_EndPos: 159
+    c_Type: Single
+  - i_LittleBeatPos: 162
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 162
+    i_EndPos: 162
+    c_Type: Single
+  - i_LittleBeatPos: 165
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 165
+    i_EndPos: 165
+    c_Type: Single
+  - i_LittleBeatPos: 167
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 167
+    i_EndPos: 167
+    c_Type: Single
+  - i_LittleBeatPos: 169
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 169
+    i_EndPos: 169
+    c_Type: Single
+  - i_LittleBeatPos: 172
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 172
+    i_EndPos: 172
+    c_Type: Single
+  - i_LittleBeatPos: 174
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 174
+    i_EndPos: 174
+    c_Type: Single
+  - i_LittleBeatPos: 177
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 177
+    i_EndPos: 177
+    c_Type: Single
+  - i_LittleBeatPos: 179
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 179
+    i_EndPos: 179
+    c_Type: Single
+  I_BeatPerMinute: 180
+  I_BeatOffset: 0
+  F_BeatStartOffset: 0
+  I_LittleBeats: 4
+  AC_ClipToPlay: {fileID: 8300000, guid: 1411ff83bbba5ef4c82862310824e67d, type: 3}
+  jsonFile: {fileID: 4900000, guid: d4fa4035504d4e747a19a51c21b3d38e, type: 3}
+  I_SoundTracks: 4

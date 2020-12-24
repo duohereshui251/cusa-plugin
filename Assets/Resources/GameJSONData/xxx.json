@@ -1,0 +1,428 @@
+{
+    "song_name": "xxx",
+    "path": "xxx_path",
+    "bpm": 128,
+    "offset": 0.0,
+    "little_beats": 4,
+    "sound_tracks": 4,
+    "nodeTypes": [
+        {
+            "ID": 0,
+            "TypeName": "Noodle"
+        },
+        {
+            "ID": 1,
+            "TypeName": "Single"
+        },
+        {
+            "ID": 0,
+            "TypeName": "hh"
+        },
+        {
+            "ID": 1,
+            "TypeName": "lalala"
+        }
+    ],
+    "nodes": [
+        {
+            "ID": 0,
+            "littleBeatPos": 2,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 1,
+            "littleBeatPos": 3,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 2,
+            "littleBeatPos": 4,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 3,
+            "littleBeatPos": 5,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 4,
+            "littleBeatPos": 6,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 5,
+            "littleBeatPos": 7,
+            "startPos": 2,
+            "endPos": 7,
+            "sound_track": 4,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 6,
+            "littleBeatPos": 9,
+            "startPos": 9,
+            "endPos": 9,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 7,
+            "littleBeatPos": 10,
+            "startPos": 10,
+            "endPos": 14,
+            "sound_track": 2,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 8,
+            "littleBeatPos": 11,
+            "startPos": 10,
+            "endPos": 14,
+            "sound_track": 2,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 9,
+            "littleBeatPos": 12,
+            "startPos": 10,
+            "endPos": 14,
+            "sound_track": 2,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 10,
+            "littleBeatPos": 13,
+            "startPos": 10,
+            "endPos": 14,
+            "sound_track": 2,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 11,
+            "littleBeatPos": 14,
+            "startPos": 10,
+            "endPos": 14,
+            "sound_track": 2,
+            "nodeType": "Noodle"
+        },
+        {
+            "ID": 12,
+            "littleBeatPos": 16,
+            "startPos": 16,
+            "endPos": 16,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 13,
+            "littleBeatPos": 17,
+            "startPos": 17,
+            "endPos": 17,
+            "sound_track": 2,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 14,
+            "littleBeatPos": 18,
+            "startPos": 18,
+            "endPos": 18,
+            "sound_track": 3,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 15,
+            "littleBeatPos": 19,
+            "startPos": 19,
+            "endPos": 19,
+            "sound_track": 4,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 16,
+            "littleBeatPos": 20,
+            "startPos": 20,
+            "endPos": 20,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 17,
+            "littleBeatPos": 21,
+            "startPos": 21,
+            "endPos": 21,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 18,
+            "littleBeatPos": 22,
+            "startPos": 22,
+            "endPos": 22,
+            "sound_track": 3,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 19,
+            "littleBeatPos": 23,
+            "startPos": 23,
+            "endPos": 23,
+            "sound_track": 4,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 20,
+            "littleBeatPos": 24,
+            "startPos": 24,
+            "endPos": 24,
+            "sound_track": 4,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 21,
+            "littleBeatPos": 26,
+            "startPos": 26,
+            "endPos": 26,
+            "sound_track": 3,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 22,
+            "littleBeatPos": 28,
+            "startPos": 28,
+            "endPos": 28,
+            "sound_track": 2,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 23,
+            "littleBeatPos": 29,
+            "startPos": 29,
+            "endPos": 29,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 24,
+            "littleBeatPos": 30,
+            "startPos": 30,
+            "endPos": 30,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 25,
+            "littleBeatPos": 32,
+            "startPos": 32,
+            "endPos": 32,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 26,
+            "littleBeatPos": 33,
+            "startPos": 33,
+            "endPos": 33,
+            "sound_track": 4,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 27,
+            "littleBeatPos": 35,
+            "startPos": 35,
+            "endPos": 35,
+            "sound_track": 3,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 28,
+            "littleBeatPos": 37,
+            "startPos": 37,
+            "endPos": 37,
+            "sound_track": 1,
+            "nodeType": "lalala"
+        },
+        {
+            "ID": 29,
+            "littleBeatPos": 38,
+            "startPos": 38,
+            "endPos": 38,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 30,
+            "littleBeatPos": 39,
+            "startPos": 39,
+            "endPos": 39,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 31,
+            "littleBeatPos": 40,
+            "startPos": 40,
+            "endPos": 40,
+            "sound_track": 4,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 32,
+            "littleBeatPos": 41,
+            "startPos": 41,
+            "endPos": 41,
+            "sound_track": 4,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 33,
+            "littleBeatPos": 43,
+            "startPos": 43,
+            "endPos": 43,
+            "sound_track": 4,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 34,
+            "littleBeatPos": 48,
+            "startPos": 48,
+            "endPos": 48,
+            "sound_track": 3,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 35,
+            "littleBeatPos": 55,
+            "startPos": 55,
+            "endPos": 55,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 36,
+            "littleBeatPos": 57,
+            "startPos": 57,
+            "endPos": 57,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 37,
+            "littleBeatPos": 61,
+            "startPos": 61,
+            "endPos": 61,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 38,
+            "littleBeatPos": 62,
+            "startPos": 62,
+            "endPos": 62,
+            "sound_track": 3,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 39,
+            "littleBeatPos": 63,
+            "startPos": 63,
+            "endPos": 63,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 40,
+            "littleBeatPos": 68,
+            "startPos": 68,
+            "endPos": 68,
+            "sound_track": 3,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 41,
+            "littleBeatPos": 72,
+            "startPos": 72,
+            "endPos": 72,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 42,
+            "littleBeatPos": 77,
+            "startPos": 77,
+            "endPos": 77,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 43,
+            "littleBeatPos": 81,
+            "startPos": 81,
+            "endPos": 81,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 44,
+            "littleBeatPos": 84,
+            "startPos": 84,
+            "endPos": 84,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 45,
+            "littleBeatPos": 85,
+            "startPos": 85,
+            "endPos": 85,
+            "sound_track": 3,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 46,
+            "littleBeatPos": 87,
+            "startPos": 87,
+            "endPos": 87,
+            "sound_track": 3,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 47,
+            "littleBeatPos": 89,
+            "startPos": 89,
+            "endPos": 89,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 48,
+            "littleBeatPos": 91,
+            "startPos": 91,
+            "endPos": 91,
+            "sound_track": 2,
+            "nodeType": "Single"
+        },
+        {
+            "ID": 49,
+            "littleBeatPos": 94,
+            "startPos": 94,
+            "endPos": 94,
+            "sound_track": 2,
+            "nodeType": "Single"
+        }
+    ]
+}
