@@ -1,5 +1,6 @@
 {
-    "song_name": "小野道",
+    "song_name": "YouMakeMeLife1up",
+    "path": "xxx_path",
     "bpm": 180,
     "offset": 0.0,
     "little_beats": 4,
@@ -12,328 +13,88 @@
         {
             "ID": 1,
             "TypeName": "Single"
+        },
+        {
+            "ID": 0,
+            "TypeName": "New Note Type0"
+        },
+        {
+            "ID": 1,
+            "TypeName": "New Note Type1"
+        },
+        {
+            "ID": 2,
+            "TypeName": "New Note Type2"
+        },
+        {
+            "ID": 3,
+            "TypeName": "New Note Type3"
         }
     ],
     "nodes": [
         {
             "ID": 0,
-            "littleBeatPos": 1,
-            "startPos": 1,
-            "endPos": 8,
+            "littleBeatPos": 3,
+            "startPos": 3,
+            "endPos": 3,
             "sound_track": 2,
-            "nodeType": "Noodle"
+            "nodeType": ""
         },
         {
             "ID": 1,
-            "littleBeatPos": 2,
-            "startPos": 1,
-            "endPos": 8,
-            "sound_track": 2,
-            "nodeType": "Noodle"
+            "littleBeatPos": 4,
+            "startPos": 4,
+            "endPos": 4,
+            "sound_track": 3,
+            "nodeType": "New Note Type1"
         },
         {
             "ID": 2,
-            "littleBeatPos": 3,
-            "startPos": 1,
-            "endPos": 8,
-            "sound_track": 2,
-            "nodeType": "Noodle"
+            "littleBeatPos": 7,
+            "startPos": 7,
+            "endPos": 7,
+            "sound_track": 1,
+            "nodeType": "New Note Type3"
         },
         {
             "ID": 3,
-            "littleBeatPos": 4,
-            "startPos": 1,
-            "endPos": 8,
+            "littleBeatPos": 9,
+            "startPos": 9,
+            "endPos": 9,
             "sound_track": 2,
-            "nodeType": "Noodle"
+            "nodeType": "New Note Type3"
         },
         {
             "ID": 4,
-            "littleBeatPos": 5,
-            "startPos": 1,
-            "endPos": 8,
-            "sound_track": 2,
-            "nodeType": "Noodle"
+            "littleBeatPos": 10,
+            "startPos": 10,
+            "endPos": 10,
+            "sound_track": 4,
+            "nodeType": "New Note Type3"
         },
         {
             "ID": 5,
-            "littleBeatPos": 6,
-            "startPos": 1,
-            "endPos": 8,
+            "littleBeatPos": 14,
+            "startPos": 14,
+            "endPos": 14,
             "sound_track": 2,
-            "nodeType": "Noodle"
+            "nodeType": "New Note Type3"
         },
         {
             "ID": 6,
-            "littleBeatPos": 7,
-            "startPos": 1,
-            "endPos": 8,
+            "littleBeatPos": 15,
+            "startPos": 15,
+            "endPos": 15,
             "sound_track": 2,
-            "nodeType": "Noodle"
+            "nodeType": "New Note Type3"
         },
         {
             "ID": 7,
-            "littleBeatPos": 8,
-            "startPos": 1,
-            "endPos": 8,
-            "sound_track": 2,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 8,
-            "littleBeatPos": 32,
-            "startPos": 32,
-            "endPos": 32,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 9,
-            "littleBeatPos": 41,
-            "startPos": 41,
-            "endPos": 41,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 10,
-            "littleBeatPos": 46,
-            "startPos": 46,
-            "endPos": 46,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 11,
-            "littleBeatPos": 51,
-            "startPos": 51,
-            "endPos": 51,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 12,
-            "littleBeatPos": 55,
-            "startPos": 55,
-            "endPos": 55,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 13,
-            "littleBeatPos": 60,
-            "startPos": 60,
-            "endPos": 60,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 14,
-            "littleBeatPos": 65,
-            "startPos": 65,
-            "endPos": 65,
-            "sound_track": 1,
-            "nodeType": "Noodle"
-        },
-        {
-            "ID": 15,
-            "littleBeatPos": 110,
-            "startPos": 110,
-            "endPos": 110,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 16,
-            "littleBeatPos": 114,
-            "startPos": 114,
-            "endPos": 114,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 17,
-            "littleBeatPos": 118,
-            "startPos": 118,
-            "endPos": 118,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 18,
-            "littleBeatPos": 121,
-            "startPos": 121,
-            "endPos": 121,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 19,
-            "littleBeatPos": 125,
-            "startPos": 125,
-            "endPos": 125,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 20,
-            "littleBeatPos": 128,
-            "startPos": 128,
-            "endPos": 128,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 21,
-            "littleBeatPos": 132,
-            "startPos": 132,
-            "endPos": 132,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 22,
-            "littleBeatPos": 134,
-            "startPos": 134,
-            "endPos": 134,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 23,
-            "littleBeatPos": 137,
-            "startPos": 137,
-            "endPos": 137,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 24,
-            "littleBeatPos": 140,
-            "startPos": 140,
-            "endPos": 140,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 25,
-            "littleBeatPos": 143,
-            "startPos": 143,
-            "endPos": 143,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 26,
-            "littleBeatPos": 146,
-            "startPos": 146,
-            "endPos": 146,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 27,
-            "littleBeatPos": 149,
-            "startPos": 149,
-            "endPos": 149,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 28,
-            "littleBeatPos": 152,
-            "startPos": 152,
-            "endPos": 152,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 29,
-            "littleBeatPos": 154,
-            "startPos": 154,
-            "endPos": 154,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 30,
-            "littleBeatPos": 157,
-            "startPos": 157,
-            "endPos": 157,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 31,
-            "littleBeatPos": 159,
-            "startPos": 159,
-            "endPos": 159,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 32,
-            "littleBeatPos": 162,
-            "startPos": 162,
-            "endPos": 162,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 33,
-            "littleBeatPos": 165,
-            "startPos": 165,
-            "endPos": 165,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 34,
-            "littleBeatPos": 167,
-            "startPos": 167,
-            "endPos": 167,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 35,
-            "littleBeatPos": 169,
-            "startPos": 169,
-            "endPos": 169,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 36,
-            "littleBeatPos": 172,
-            "startPos": 172,
-            "endPos": 172,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 37,
-            "littleBeatPos": 174,
-            "startPos": 174,
-            "endPos": 174,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 38,
-            "littleBeatPos": 177,
-            "startPos": 177,
-            "endPos": 177,
-            "sound_track": 1,
-            "nodeType": "Single"
-        },
-        {
-            "ID": 39,
-            "littleBeatPos": 179,
-            "startPos": 179,
-            "endPos": 179,
-            "sound_track": 1,
-            "nodeType": "Single"
+            "littleBeatPos": 34,
+            "startPos": 34,
+            "endPos": 34,
+            "sound_track": 4,
+            "nodeType": ""
         }
     ]
 }

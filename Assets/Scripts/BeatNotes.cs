@@ -70,6 +70,11 @@ public class BeatNotes : ScriptableObject
     {
         return c_NoteTypes.GetTypeList();
     }
+
+    public int GetNoteTypesCount()
+    {
+        return c_NoteTypes.Count();
+    }
     public void ForceSort()
     {
         l_Notes.Sort((left, right) => { 
@@ -366,10 +371,6 @@ public class BeatNotes : ScriptableObject
         return c_NoteTypes.GetTypeByIndex(index);
     }
 
-    public bool InsertType(string typename, Color color)
-    {
-        return c_NoteTypes.Insert(typename, color);
-    }
 
     public bool DeleteType(string typename)
     {
@@ -487,7 +488,7 @@ public class DefaultNoteType
     public List<NoteType> l_defaultTypes;
     public DefaultNoteType()
     {
-        Debug.Log("BaseClass: DefaultNoteType");
+       // Debug.Log("BaseClass: DefaultNoteType");
         l_defaultTypes = new List<NoteType>();
         l_defaultTypes.Add(new NoteType(0, NoteType.Noodle));
         l_defaultTypes.Add(new NoteType(1, NoteType.Single));
@@ -503,14 +504,17 @@ public class CustomNoteType: DefaultNoteType
 
     public CustomNoteType():base()
     {
-        Debug.Log("DerivedClass: CustomNoteType");
+        //Debug.Log("DerivedClass: CustomNoteType");
         l_customTypes = new List<NoteType>();
     }
     public List<NoteType> GetTypeList()
     {
-        var templist = base.l_defaultTypes;
+        List<NoteType> templist = new List<NoteType>();
+        templist.AddRange(base.l_defaultTypes);
         templist.AddRange(l_customTypes);
+        //Print();
         return templist;
+
     }
     public NoteType GetTypeByName(string typename)
     {
@@ -548,15 +552,18 @@ public class CustomNoteType: DefaultNoteType
     {
         bool res = false;
         int new_id = 0;
-        if (l_customTypes.Count > 0)
+        if(l_customTypes.Count == 0)
         {
-            new_id = l_customTypes[l_customTypes.Count - 1].I_Id + 1;
+            new_id = 2;
+        }else if (l_customTypes.Count > 0)
+        {
+            new_id =  l_customTypes[l_customTypes.Count - 1].I_Id + 1 ;
         }
         if (typename == BeatNotes.default_name)
         {
             typename += new_id.ToString();          
         }
-        Debug.LogFormat("[CustomNoteType.Insert] typename {0} is going to be inserted", typename);
+        //Debug.LogFormat("[CustomNoteType.Insert] typename {0} is going to be inserted", typename);
         if(!l_defaultTypes.Exists(x => x.S_TypeName == typename) )
         {
             if(!l_customTypes.Exists(x => x.S_TypeName == typename))
@@ -637,6 +644,7 @@ public class CustomNoteType: DefaultNoteType
     public Color GetColor(string typename)
     {
         int index = Find(typename);
+        Color color = Color.white;
         if(index != -1)
         {
             if(index  < 2)
@@ -645,13 +653,18 @@ public class CustomNoteType: DefaultNoteType
             }
             else
             {
-                return l_customTypes[index - 2].NoteColor;
+                try
+                {
+                    color =  l_customTypes[index - 2].NoteColor;
+
+                }catch(Exception ex)
+                {
+                    Debug.LogError(ex.Message);
+                    Debug.LogError("[CustomNoteType.GetColor] index: " + index.ToString());
+                }
             }
         }
-        else
-        {
-            return Color.white;
-        }
+        return color;
     }
 
     public int Count()

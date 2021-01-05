@@ -1,0 +1,724 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ac4ab32227d6d7458eaf9e0f73a60a7, type: 3}
+  m_Name: YouMakeMeLife1up
+  m_EditorClassIdentifier: 
+  l_Notes:
+  - i_LittleBeatPos: 14
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 14
+    i_EndPos: 14
+    c_Type: 
+  - i_LittleBeatPos: 19
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 19
+    i_EndPos: 19
+    c_Type: Single
+  - i_LittleBeatPos: 21
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 21
+    i_EndPos: 21
+    c_Type: 
+  - i_LittleBeatPos: 23
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 23
+    i_EndPos: 23
+    c_Type: Single
+  - i_LittleBeatPos: 25
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 25
+    i_EndPos: 25
+    c_Type: 
+  - i_LittleBeatPos: 27
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 27
+    i_EndPos: 27
+    c_Type: Single
+  - i_LittleBeatPos: 30
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 30
+    i_EndPos: 30
+    c_Type: Single
+  - i_LittleBeatPos: 35
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 35
+    i_EndPos: 35
+    c_Type: Single
+  - i_LittleBeatPos: 39
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 39
+    i_EndPos: 39
+    c_Type: Single
+  - i_LittleBeatPos: 46
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 46
+    i_EndPos: 46
+    c_Type: Single
+  - i_LittleBeatPos: 50
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 50
+    i_EndPos: 50
+    c_Type: Single
+  - i_LittleBeatPos: 54
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 54
+    i_EndPos: 54
+    c_Type: Single
+  - i_LittleBeatPos: 58
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 58
+    i_EndPos: 58
+    c_Type: Single
+  - i_LittleBeatPos: 62
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 62
+    i_EndPos: 62
+    c_Type: Single
+  - i_LittleBeatPos: 66
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 66
+    i_EndPos: 66
+    c_Type: Single
+  - i_LittleBeatPos: 71
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 71
+    i_EndPos: 71
+    c_Type: Single
+  - i_LittleBeatPos: 78
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 78
+    i_EndPos: 78
+    c_Type: Single
+  - i_LittleBeatPos: 83
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 83
+    i_EndPos: 83
+    c_Type: Single
+  - i_LittleBeatPos: 87
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 87
+    i_EndPos: 87
+    c_Type: Single
+  - i_LittleBeatPos: 91
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 91
+    i_EndPos: 91
+    c_Type: Single
+  - i_LittleBeatPos: 95
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 95
+    i_EndPos: 95
+    c_Type: Single
+  - i_LittleBeatPos: 99
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 99
+    i_EndPos: 99
+    c_Type: Single
+  - i_LittleBeatPos: 102
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 102
+    i_EndPos: 102
+    c_Type: Single
+  - i_LittleBeatPos: 110
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 110
+    i_EndPos: 110
+    c_Type: Single
+  - i_LittleBeatPos: 120
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 120
+    i_EndPos: 120
+    c_Type: Single
+  - i_LittleBeatPos: 122
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 122
+    i_EndPos: 122
+    c_Type: Single
+  - i_LittleBeatPos: 125
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 125
+    i_EndPos: 125
+    c_Type: Single
+  - i_LittleBeatPos: 130
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 130
+    i_EndPos: 130
+    c_Type: Single
+  - i_LittleBeatPos: 132
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 132
+    i_EndPos: 132
+    c_Type: Single
+  - i_LittleBeatPos: 135
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 135
+    i_EndPos: 135
+    c_Type: Single
+  - i_LittleBeatPos: 137
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 137
+    i_EndPos: 137
+    c_Type: Single
+  - i_LittleBeatPos: 139
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 139
+    i_EndPos: 139
+    c_Type: Single
+  - i_LittleBeatPos: 143
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 143
+    i_EndPos: 143
+    c_Type: Single
+  - i_LittleBeatPos: 147
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 147
+    i_EndPos: 147
+    c_Type: Single
+  - i_LittleBeatPos: 149
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 149
+    i_EndPos: 149
+    c_Type: Single
+  - i_LittleBeatPos: 151
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 151
+    i_EndPos: 151
+    c_Type: Single
+  - i_LittleBeatPos: 155
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 155
+    i_EndPos: 155
+    c_Type: Single
+  - i_LittleBeatPos: 159
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 159
+    i_EndPos: 159
+    c_Type: Single
+  - i_LittleBeatPos: 163
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 163
+    i_EndPos: 163
+    c_Type: Single
+  - i_LittleBeatPos: 165
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 165
+    i_EndPos: 165
+    c_Type: Single
+  - i_LittleBeatPos: 166
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 166
+    i_EndPos: 166
+    c_Type: Single
+  - i_LittleBeatPos: 171
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 171
+    i_EndPos: 171
+    c_Type: Single
+  - i_LittleBeatPos: 175
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 175
+    i_EndPos: 175
+    c_Type: Single
+  - i_LittleBeatPos: 179
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 179
+    i_EndPos: 179
+    c_Type: Single
+  - i_LittleBeatPos: 184
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 184
+    i_EndPos: 184
+    c_Type: Single
+  - i_LittleBeatPos: 188
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 188
+    i_EndPos: 188
+    c_Type: Single
+  - i_LittleBeatPos: 191
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 191
+    i_EndPos: 191
+    c_Type: Single
+  - i_LittleBeatPos: 195
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 195
+    i_EndPos: 195
+    c_Type: Single
+  - i_LittleBeatPos: 204
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 204
+    i_EndPos: 204
+    c_Type: Single
+  - i_LittleBeatPos: 208
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 208
+    i_EndPos: 208
+    c_Type: Single
+  - i_LittleBeatPos: 212
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 212
+    i_EndPos: 212
+    c_Type: Single
+  - i_LittleBeatPos: 216
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 216
+    i_EndPos: 216
+    c_Type: Single
+  - i_LittleBeatPos: 220
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 220
+    i_EndPos: 220
+    c_Type: Single
+  - i_LittleBeatPos: 224
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 224
+    i_EndPos: 224
+    c_Type: Single
+  - i_LittleBeatPos: 228
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 228
+    i_EndPos: 228
+    c_Type: Single
+  - i_LittleBeatPos: 232
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 232
+    i_EndPos: 232
+    c_Type: Single
+  - i_LittleBeatPos: 236
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 236
+    i_EndPos: 236
+    c_Type: Single
+  - i_LittleBeatPos: 240
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 240
+    i_EndPos: 240
+    c_Type: Single
+  - i_LittleBeatPos: 243
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 243
+    i_EndPos: 243
+    c_Type: Single
+  - i_LittleBeatPos: 245
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 245
+    i_EndPos: 245
+    c_Type: Single
+  - i_LittleBeatPos: 250
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 250
+    i_EndPos: 250
+    c_Type: Single
+  - i_LittleBeatPos: 254
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 254
+    i_EndPos: 254
+    c_Type: Single
+  - i_LittleBeatPos: 259
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 259
+    i_EndPos: 259
+    c_Type: Single
+  - i_LittleBeatPos: 262
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 262
+    i_EndPos: 262
+    c_Type: Single
+  - i_LittleBeatPos: 267
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 267
+    i_EndPos: 267
+    c_Type: Single
+  - i_LittleBeatPos: 271
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 271
+    i_EndPos: 271
+    c_Type: Single
+  - i_LittleBeatPos: 275
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 275
+    i_EndPos: 275
+    c_Type: Single
+  - i_LittleBeatPos: 279
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 279
+    i_EndPos: 279
+    c_Type: Single
+  - i_LittleBeatPos: 283
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 283
+    i_EndPos: 283
+    c_Type: Single
+  - i_LittleBeatPos: 288
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 288
+    i_EndPos: 288
+    c_Type: Single
+  - i_LittleBeatPos: 292
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 292
+    i_EndPos: 292
+    c_Type: Single
+  - i_LittleBeatPos: 296
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 296
+    i_EndPos: 296
+    c_Type: Single
+  - i_LittleBeatPos: 300
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 300
+    i_EndPos: 300
+    c_Type: Single
+  - i_LittleBeatPos: 303
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 303
+    i_EndPos: 303
+    c_Type: Single
+  - i_LittleBeatPos: 308
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 308
+    i_EndPos: 308
+    c_Type: Single
+  - i_LittleBeatPos: 310
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 310
+    i_EndPos: 310
+    c_Type: Single
+  - i_LittleBeatPos: 314
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 314
+    i_EndPos: 314
+    c_Type: Single
+  - i_LittleBeatPos: 321
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 321
+    i_EndPos: 321
+    c_Type: Single
+  - i_LittleBeatPos: 331
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 331
+    i_EndPos: 331
+    c_Type: Single
+  - i_LittleBeatPos: 335
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 335
+    i_EndPos: 335
+    c_Type: Single
+  - i_LittleBeatPos: 340
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 340
+    i_EndPos: 340
+    c_Type: Single
+  - i_LittleBeatPos: 344
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 344
+    i_EndPos: 344
+    c_Type: Single
+  - i_LittleBeatPos: 347
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 347
+    i_EndPos: 347
+    c_Type: Single
+  - i_LittleBeatPos: 352
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 352
+    i_EndPos: 352
+    c_Type: Single
+  - i_LittleBeatPos: 356
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 356
+    i_EndPos: 356
+    c_Type: Single
+  - i_LittleBeatPos: 360
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 360
+    i_EndPos: 360
+    c_Type: Single
+  - i_LittleBeatPos: 364
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 364
+    i_EndPos: 364
+    c_Type: Single
+  - i_LittleBeatPos: 368
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 368
+    i_EndPos: 368
+    c_Type: Single
+  - i_LittleBeatPos: 371
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 371
+    i_EndPos: 371
+    c_Type: Single
+  - i_LittleBeatPos: 376
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 376
+    i_EndPos: 376
+    c_Type: Single
+  - i_LittleBeatPos: 380
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 380
+    i_EndPos: 380
+    c_Type: Single
+  - i_LittleBeatPos: 382
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 382
+    i_EndPos: 382
+    c_Type: Single
+  - i_LittleBeatPos: 385
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 385
+    i_EndPos: 385
+    c_Type: Single
+  - i_LittleBeatPos: 387
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 387
+    i_EndPos: 387
+    c_Type: Single
+  - i_LittleBeatPos: 389
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 389
+    i_EndPos: 389
+    c_Type: Single
+  - i_LittleBeatPos: 392
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 392
+    i_EndPos: 392
+    c_Type: Single
+  - i_LittleBeatPos: 396
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 396
+    i_EndPos: 396
+    c_Type: Single
+  - i_LittleBeatPos: 400
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 400
+    i_EndPos: 400
+    c_Type: Single
+  - i_LittleBeatPos: 404
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 404
+    i_EndPos: 404
+    c_Type: Single
+  - i_LittleBeatPos: 406
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 406
+    i_EndPos: 406
+    c_Type: Single
+  - i_LittleBeatPos: 408
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 408
+    i_EndPos: 408
+    c_Type: Single
+  - i_LittleBeatPos: 412
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 412
+    i_EndPos: 412
+    c_Type: Single
+  - i_LittleBeatPos: 415
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 415
+    i_EndPos: 415
+    c_Type: Single
+  - i_LittleBeatPos: 418
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 418
+    i_EndPos: 418
+    c_Type: Single
+  - i_LittleBeatPos: 422
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 422
+    i_EndPos: 422
+    c_Type: Single
+  - i_LittleBeatPos: 425
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 425
+    i_EndPos: 425
+    c_Type: Single
+  - i_LittleBeatPos: 430
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 430
+    i_EndPos: 430
+    c_Type: Single
+  - i_LittleBeatPos: 432
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 432
+    i_EndPos: 432
+    c_Type: Single
+  - i_LittleBeatPos: 434
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 434
+    i_EndPos: 434
+    c_Type: Single
+  - i_LittleBeatPos: 436
+    i_sound_track: 1
+    e_Type: 0
+    i_StartPos: 436
+    i_EndPos: 436
+    c_Type: Single
+  - i_LittleBeatPos: 438
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 438
+    i_EndPos: 438
+    c_Type: Single
+  - i_LittleBeatPos: 440
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 440
+    i_EndPos: 440
+    c_Type: Single
+  - i_LittleBeatPos: 444
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 444
+    i_EndPos: 444
+    c_Type: Single
+  - i_LittleBeatPos: 446
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 446
+    i_EndPos: 446
+    c_Type: Single
+  - i_LittleBeatPos: 449
+    i_sound_track: 3
+    e_Type: 0
+    i_StartPos: 449
+    i_EndPos: 449
+    c_Type: Single
+  - i_LittleBeatPos: 454
+    i_sound_track: 2
+    e_Type: 0
+    i_StartPos: 454
+    i_EndPos: 454
+    c_Type: Single
+  - i_LittleBeatPos: 457
+    i_sound_track: 4
+    e_Type: 0
+    i_StartPos: 457
+    i_EndPos: 457
+    c_Type: Single
+  I_BeatPerMinute: 180
+  I_BeatOffset: 0
+  F_BeatStartOffset: 0
+  I_LittleBeats: 4
+  AC_ClipToPlay: {fileID: 8300000, guid: 27d2501a76491cc4b981fb86bee14fb4, type: 3}
+  jsonFile: {fileID: 4900000, guid: 66b08c447eac7774cadad3ffe4a3313c, type: 3}
+  I_SoundTracks: 4

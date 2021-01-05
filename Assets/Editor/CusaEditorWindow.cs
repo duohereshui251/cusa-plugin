@@ -200,12 +200,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
     public CusaEditorWindow()
     {
-        Debug.Log("[CusaEditorWindow.construct]");
+        //Debug.Log("[CusaEditorWindow.construct]");
         this.titleContent = new GUIContent("Cusa Editor");
     }
     private void Awake()
     {
-        Debug.Log("[CusaEditorWindow.Awake]");
+        //Debug.Log("[CusaEditorWindow.Awake]");
         F_RectWidth = 1000;
         I_BeatCheckLine = 50;
         f_SliderHeight = 80;
@@ -226,7 +226,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     [OnOpenAsset]
     static bool OnOpenAsset(int instanceID, int line)
     {
-        Debug.Log("[CusaEditorWindow.OnOpenAsset]");
+        //Debug.Log("[CusaEditorWindow.OnOpenAsset]");
         var nodesInfo = EditorUtility.InstanceIDToObject(instanceID) as BeatNotes;
         if (nodesInfo)
         {
@@ -238,7 +238,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     private void OnEnable()
     {
         // 由于CusaInspector里window.InitData(beats)调用会比较晚，所以这里一开始基本都会返回错误，但没有影响
-        Debug.Log("[CusaEditorWindow.OnEnable]");
+        //Debug.Log("[CusaEditorWindow.OnEnable]");
         OnSelectionChange();
         if (!Editable)
         {
@@ -314,12 +314,12 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         f_beatEach = 60f / beats.I_BeatPerMinute;
         f_littleBeatEach = f_beatEach / little_beats;
-        Debug.Log("[CusaEditorWindow.InitData] f_littleBeatEac: " + f_littleBeatEach.ToString());
+        //Debug.Log("[CusaEditorWindow.InitData] f_littleBeatEac: " + f_littleBeatEach.ToString());
         f_viewIntervalWidth = 40.0f;
         f_viewNoteWidth = 12.0f;
         i_totalBeats = (int)(f_totalTime / f_beatEach);
         i_totalLittleBeats = (int)(f_totalTime / f_littleBeatEach);
-        Debug.Log("[CusaEditorWindow.InitData] i_totalLittleBeats: " + i_totalLittleBeats.ToString());
+        //Debug.Log("[CusaEditorWindow.InitData] i_totalLittleBeats: " + i_totalLittleBeats.ToString());
 
         F_RectWidth = win_width;
 
@@ -346,7 +346,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         blocks = (int)f_sliderDisplayWidth / I_sliderBlockWidth;
         PerBlockBeats = (i_totalLittleBeats / (blocks - 1)) + 1;
-        Debug.LogFormat("[CusaEditorWindow.InitData] blocks: {0}, PerBlockBeats: {1}", blocks, PerBlockBeats);
+        //Debug.LogFormat("[CusaEditorWindow.InitData] blocks: {0}, PerBlockBeats: {1}", blocks, PerBlockBeats);
         if (I_SoundTracks > 0)
         {
             f_soundTracksWidth = (win_height - f_SliderHeight) / I_SoundTracks;
@@ -634,7 +634,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         Debug.Log("[CusaEditorWindows.AddNoteType] Add Note Type.");
         if (beats.AddNoteType(BeatNotes.default_name, Color.white))
         {
-            beats.PrintAllNoteType();
+            //beats.PrintAllNoteType();
         }
         else
         {
@@ -686,19 +686,28 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             for (int j = 0; j < numbers_one_row; ++j)
             {
                 int index = i * numbers_one_row + j;
-                if (index < beats.GetTypeCount())
+                
+                if (index < beats.GetTypeCount() && index < beats.GetTypeCount())
                 {
-                    NoteType node = beats.GetTypeByIndex(index);
-                    GUI.color = node.NoteColor;
-                    string buttonname = "xxxxx";
-                    if (GUILayout.Button(node.S_TypeName, EditorStyles.toolbarButton, GUILayout.ExpandWidth(true)))
+                    try
                     {
-                        GUI.SetNextControlName(buttonname);
-                        GUI.FocusControl(buttonname);
-                        b_TypeSelected = true;
-                        S_SelectedNoteTypeName = node.S_TypeName;
-                        Debug.LogFormat("current selected: {0}", S_SelectedNoteTypeName);
+                        NoteType node = beats.GetTypeByIndex(index);
+                        GUI.color = node.NoteColor;
+                        string buttonname = "xxxxx";
+                        if (GUILayout.Button(node.S_TypeName, EditorStyles.toolbarButton, GUILayout.ExpandWidth(true)))
+                        {
+                            GUI.SetNextControlName(buttonname);
+                            GUI.FocusControl(buttonname);
+                            b_TypeSelected = true;
+                            S_SelectedNoteTypeName = node.S_TypeName;
+                            Debug.LogFormat("current selected: {0}", S_SelectedNoteTypeName);
+                        }
                     }
+                    catch(Exception ex)
+                    {
+                        //Debug.Log("DrawAllNoteTypes: " + index.ToString());
+                    }
+
                     GUI.color = Color.white;
                     //GUILayout.FlexibleSpace();
                 }
@@ -1431,7 +1440,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
                 float blockHeight = PerTrackHeight * blockNotes / PerBlockBeats;
                 if (justForDebug.on)
                 {
-                    Debug.LogFormat("[BeatNodes.GetPerBlockNotes] track: {0}, blockNotes: {1}, blockHeight: {2}", i + 1, blockNotes, blockHeight);
+                    //Debug.LogFormat("[BeatNodes.GetPerBlockNotes] track: {0}, blockNotes: {1}, blockHeight: {2}", i + 1, blockNotes, blockHeight);
                     justForDebug.on = false;
                 }
                 Rect tempBlock = new Rect(startX + j * I_sliderBlockWidth, endY - blockHeight, I_sliderBlockWidth - 1, blockHeight);
@@ -1507,6 +1516,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
             beatjsonObj.nodes.Add(new BeatNotesJson.NoteJson(i, nodes[i].i_LittleBeatPos, nodes[i].i_sound_track, nodes[i].c_Type, nodes[i].i_StartPos, nodes[i].i_EndPos));
         }
         List<NoteType> types = beats.GetNoteTypes();
+        beats.PrintAllNoteType();
+        Debug.Log("[CusaEditorWindow.SaveToJson] type count: " + types.Count.ToString());
         for(int i = 0;i < types.Count; ++i)
         {
             beatjsonObj.nodeTypes.Add(new BeatNotesJson.NoteTypeJson(types[i].I_Id, types[i].S_TypeName));
