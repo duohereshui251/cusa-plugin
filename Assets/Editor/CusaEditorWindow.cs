@@ -179,6 +179,8 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     Rect MainViewRect;
     Rect NoteSettingRect;
 
+    Vector2 typeEditorScrollPos;
+
 
     // 选中的类型名称
     string S_SelectedNoteTypeName;
@@ -674,11 +676,13 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
     }
     void DrawAllNoteTypes()
     {
-        Rect tempRect = EditorGUILayout.BeginVertical();
+        Rect tempRect = EditorGUILayout.BeginVertical(GUILayout.MaxHeight(70));
         GUI.color = Color.gray;
         GUI.Box(tempRect, "");
         GUI.color = Color.white;
 
+        typeEditorScrollPos =
+    EditorGUILayout.BeginScrollView(typeEditorScrollPos,  GUILayout.Height(70));
         int numbers_one_row = 2;
         for (int i = 0; i <= beats.GetTypeCount() / numbers_one_row; ++i)
         {
@@ -718,7 +722,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         }
 
         GUILayout.FlexibleSpace();
-        //EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndScrollView();
         DrawTypeControlButton();
         EditorGUILayout.EndVertical();
     }
@@ -771,7 +775,7 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
         tempRect = EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.Space(15);
-        EditorGUILayout.BeginVertical();
+        Rect typeAreaRect = EditorGUILayout.BeginVertical();
 
         // draw a line
         Rect lineRect = new Rect(tempRect.xMin, tempRect.yMin + 1, tempRect.width, 1);
@@ -789,11 +793,15 @@ public class CusaEditorWindow : EditorWindow, IHasCustomMenu
 
         GUI.color = Color.white;
 
-        EditorGUILayout.Space(5);
+        EditorGUILayout.Space(2);
+
+        //GUI.color = Color.green;
+        //GUI.Box(typeAreaRect, "");
+        GUI.color = Color.white;
 
         DrawAllNoteTypes();
 
-        EditorGUILayout.Space(15);
+       // EditorGUILayout.Space(15);
 
         DrawTypeEditor();
 
